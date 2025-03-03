@@ -13,6 +13,10 @@ const {writeFile} = fs.promises
 export const updateConfig = async () => {
   const {key, controller} = await getConfig()
 
+  await fetch(`http://${controller}:5173/sounder-api/ping`, {method: 'post', body: JSON.stringify({
+    key
+  })})
+
   const response = await fetch(`http://${controller}:5173/sounder-api/get-config`, {method: 'post', body: JSON.stringify({
     key
   })})

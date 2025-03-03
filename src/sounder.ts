@@ -8,19 +8,25 @@ export const sounder = async () => {
   cron.schedule('* * * * *', async () => {
     const date = new Date()
     const currentTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+    const dayNumber = `${date.getDay() === 0 ? 7 : date.getDay()}`
 
     console.log(date.toISOString())
-    console.log(currentTime)
+    console.log([currentTime, dayNumber])
     const config = await getConfig()
+
+    await fetch(`http://${config.controller}:5173/sounder-api/ping`, {method: 'post', body: JSON.stringify({
+      key: config.key
+    })})
 
     const fileName = config.schedules.reduce((fileName, schedule) => {
       if(fileName) return fileName
 
-      const [time, file] = schedule.split('/')
+      const [time, file, dayType, days] = schedule.split('/')
 
-      if(time === currentTime) return file
+      if(time !== currentTime) return false
+      if(!days.split(',').includes(dayNumber)) return false
 
-      return false
+      return file
     }, false as false | string)
 
     if(fileName){
