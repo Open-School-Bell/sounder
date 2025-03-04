@@ -29,6 +29,7 @@ export const sounder = async () => {
 
         if (time !== currentTime) return false
         if (!days.split(',').includes(dayNumber)) return false
+        if (dayType !== config.day) return false
 
         return file
       },

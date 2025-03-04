@@ -8,11 +8,12 @@ export type Config = {
   controller: string
   name: string
   id: string
+  day: string
   schedules: string[]
 }
 
 export const getConfig = async (): Promise<Config> => {
-  const content = await readFile(path.join(process.cwd(), "sounder.json"))
+  const content = await readFile(path.join(process.cwd(), 'sounder.json'))
 
   const config = JSON.parse(content.toString())
 
