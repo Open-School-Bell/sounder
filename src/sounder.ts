@@ -68,6 +68,8 @@ export const sounder = async () => {
   app.get('/play', (request, response) => {
     playSound(request.query.id as string)
 
+    console.log(`📢 Broadcast ${request.query.id as string}`)
+
     response.json({status: 'OK'})
   })
 
