@@ -1,8 +1,9 @@
 import cron from 'node-cron'
+import express from 'express'
 
-import { updateConfig } from './bin/update-config'
-import { getConfig } from './utils/config'
-import { playSound } from './utils/play'
+import {updateConfig} from './bin/update-config'
+import {getConfig} from './utils/config'
+import {playSound} from './utils/play'
 
 export const sounder = async () => {
   cron.schedule('* * * * *', async () => {
@@ -14,22 +15,28 @@ export const sounder = async () => {
     console.log([currentTime, dayNumber])
     const config = await getConfig()
 
-    await fetch(`http://${config.controller}:5173/sounder-api/ping`, {method: 'post', body: JSON.stringify({
-      key: config.key
-    })})
+    await fetch(`http://${config.controller}:5173/sounder-api/ping`, {
+      method: 'post',
+      body: JSON.stringify({
+        key: config.key
+      })
+    })
 
-    const fileName = config.schedules.reduce((fileName, schedule) => {
-      if(fileName) return fileName
+    const fileName = config.schedules.reduce(
+      (fileName, schedule) => {
+        if (fileName) return fileName
 
-      const [time, file, dayType, days] = schedule.split('/')
+        const [time, file, dayType, days] = schedule.split('/')
 
-      if(time !== currentTime) return false
-      if(!days.split(',').includes(dayNumber)) return false
+        if (time !== currentTime) return false
+        if (!days.split(',').includes(dayNumber)) return false
 
-      return file
-    }, false as false | string)
+        return file
+      },
+      false as false | string
+    )
 
-    if(fileName){
+    if (fileName) {
       console.log(`🔔 Ring Ring "${fileName}"`)
       playSound(fileName)
     }
@@ -38,11 +45,31 @@ export const sounder = async () => {
   cron.schedule('0 * * * *', () => {
     updateConfig()
   })
-  
+
   console.log(`🚀 Launching Sounder`)
   const config = await getConfig()
-  if(!config.key){
+  if (!config.key) {
     console.log('❌ Please Enroll before starting')
   }
   updateConfig()
+
+  const app = express()
+
+  app.get('/', (request, response) => {
+    response.json({status: 'OK'})
+  })
+
+  app.get('/update', (request, response) => {
+    updateConfig()
+
+    response.json({status: 'OK'})
+  })
+
+  app.get('/play', (request, response) => {
+    playSound(request.query.id as string)
+
+    response.json({status: 'OK'})
+  })
+
+  app.listen(3000)
 }
