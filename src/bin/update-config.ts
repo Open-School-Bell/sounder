@@ -6,6 +6,7 @@ import {asyncForEach} from '@arcath/utils'
 import {mkdirp} from 'mkdirp'
 
 import {getConfig} from '../utils/config'
+import {log} from '../utils/log'
 
 const {writeFile} = fs.promises
 
@@ -31,10 +32,10 @@ export const updateConfig = async () => {
 
   const result = await response.json()
 
-  const content = JSON.stringify({...result, controller, key})
+  const content = JSON.stringify({...result, controller, key}, null, ' ')
 
   await writeFile(path.join(process.cwd(), 'sounder.json'), content)
-  console.log(`✅ Config updated!`)
+  log(`✅ Config updated!`)
 
   const soundsResponse = await fetch(
     `http://${controller}:5173/sounder-api/get-audio`,
@@ -65,5 +66,5 @@ export const updateConfig = async () => {
     )
   })
 
-  console.log(`🔊 Sounds Downloaded`)
+  log(`🔊 Sounds Downloaded`)
 }

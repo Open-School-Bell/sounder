@@ -4,6 +4,7 @@ import express from 'express'
 import {updateConfig} from './bin/update-config'
 import {getConfig} from './utils/config'
 import {playSound} from './utils/play'
+import {log} from './utils/log'
 
 export const sounder = async () => {
   cron.schedule('* * * * *', async () => {
@@ -11,8 +12,6 @@ export const sounder = async () => {
     const currentTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
     const dayNumber = `${date.getDay() === 0 ? 7 : date.getDay()}`
 
-    console.log(date.toISOString())
-    console.log([currentTime, dayNumber])
     const config = await getConfig()
 
     await fetch(`http://${config.controller}:5173/sounder-api/ping`, {
@@ -37,7 +36,7 @@ export const sounder = async () => {
     )
 
     if (fileName) {
-      console.log(`🔔 Ring Ring "${fileName}"`)
+      log(`🔔 Ring Ring "${fileName}"`)
       playSound(fileName)
     }
   })
@@ -46,7 +45,7 @@ export const sounder = async () => {
     updateConfig()
   })
 
-  console.log(`🚀 Launching Sounder`)
+  log(`🚀 Launching Sounder`)
   const config = await getConfig()
   if (!config.key) {
     console.log('❌ Please Enroll before starting')
@@ -54,6 +53,10 @@ export const sounder = async () => {
   updateConfig()
 
   const app = express()
+
+  app.use(express.json())
+
+  app.all('/')
 
   app.get('/', (request, response) => {
     response.json({status: 'OK'})
@@ -65,10 +68,16 @@ export const sounder = async () => {
     response.json({status: 'OK'})
   })
 
-  app.get('/play', (request, response) => {
-    playSound(request.query.id as string)
+  app.post('/play', (request, response) => {
+    if (request.body.key !== config.key) {
+      log('🔑 Bad key from controller')
+      response.json({error: 'bad key'})
+      return
+    }
 
-    console.log(`📢 Broadcast ${request.query.id as string}`)
+    playSound(request.body.sound as string)
+
+    log(`📢 Broadcast ${request.body.sound as string}`)
 
     response.json({status: 'OK'})
   })
