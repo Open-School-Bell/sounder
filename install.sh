@@ -28,3 +28,6 @@ npm run build
 sudo copy /var/osb/sounder/bin.sh /bin/sounder
 sudo chmod +x /bin/sounder
 
+sudo copy /var/osb/sounder/init.sh /etc/init.d/sounder
+sudo chmod +x /etc/init.d/sounder
+sudo update-rc.d sounder defaults
