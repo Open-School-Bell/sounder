@@ -17,6 +17,6 @@ export const enroll = async (key: string, controller: string) => {
 
   await writeFile(path.join(process.cwd(), 'sounder.json'), content)
 
-  console.dir('✅ Sounder Enrolled!')
+  console.log('✅ Sounder Enrolled!')
   process.exit(0)
 }
