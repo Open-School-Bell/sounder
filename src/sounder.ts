@@ -5,6 +5,7 @@ import {updateConfig} from './bin/update-config'
 import {getConfig} from './utils/config'
 import {playSound} from './utils/play'
 import {log} from './utils/log'
+import {sounderApi} from './utils/sounder-api'
 
 export const sounder = async () => {
   cron.schedule('* * * * *', async () => {
@@ -14,14 +15,7 @@ export const sounder = async () => {
 
     const config = await getConfig()
 
-    await fetch(`http://${config.controller}:5173/sounder-api/ping`, {
-      method: 'post',
-      body: JSON.stringify({
-        key: config.key
-      })
-    }).catch(reason => {
-      log(`⚠️ Unable to ping`)
-    })
+    await sounderApi('/ping', {})
 
     const fileName = config.schedules.reduce(
       (fileName, schedule) => {

@@ -7,30 +7,16 @@ import {mkdirp} from 'mkdirp'
 
 import {getConfig} from '../utils/config'
 import {log} from '../utils/log'
+import {sounderApi} from '../utils/sounder-api'
 
 const {writeFile} = fs.promises
 
 export const updateConfig = async () => {
   const {key, controller} = await getConfig()
 
-  await fetch(`http://${controller}:5173/sounder-api/ping`, {
-    method: 'post',
-    body: JSON.stringify({
-      key
-    })
-  }).catch(reason => {
-    log(`⚠️ Unable to ping`)
-  })
+  await sounderApi('/ping', {})
 
-  const response = await fetch(
-    `http://${controller}:5173/sounder-api/get-config`,
-    {
-      method: 'post',
-      body: JSON.stringify({
-        key
-      })
-    }
-  ).catch(() => log(`⚠️ Unable to get config`))
+  const response = await sounderApi('/get-config', {})
 
   if (!response) return
 
@@ -41,15 +27,7 @@ export const updateConfig = async () => {
   await writeFile(path.join(process.cwd(), 'sounder.json'), content)
   log(`✅ Config updated!`)
 
-  const soundsResponse = await fetch(
-    `http://${controller}:5173/sounder-api/get-audio`,
-    {
-      method: 'post',
-      body: JSON.stringify({
-        key
-      })
-    }
-  ).catch(() => log(`⚠️ Unable to get sounds`))
+  const soundsResponse = await sounderApi('/get-audio', {})
 
   if (!soundsResponse) return
 
@@ -62,7 +40,7 @@ export const updateConfig = async () => {
 
   await asyncForEach(sounds, async ({id, fileName}) => {
     const downloadResponse = await fetch(
-      `http://${controller}:5173/sounds/${fileName}`
+      `${controller}/sounds/${fileName}`
     ).catch(() => log(`⚠️ Unable to download sound ${fileName}`))
 
     if (!downloadResponse) return

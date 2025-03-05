@@ -4,9 +4,12 @@ import path from 'path'
 const {writeFile} = fs.promises
 
 export const enroll = async (key: string, controller: string) => {
-  const response = await fetch(`http://${controller}:5173/sounder-api/enroll`, {method: 'post', body: JSON.stringify({
-    key
-  })})
+  const response = await fetch(`${controller}/sounder-api/enroll`, {
+    method: 'post',
+    body: JSON.stringify({
+      key
+    })
+  })
 
   const result = await response.json()
 
