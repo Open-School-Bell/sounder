@@ -19,6 +19,8 @@ export const sounder = async () => {
       body: JSON.stringify({
         key: config.key
       })
+    }).catch(reason => {
+      log(`⚠️ Unable to ping`)
     })
 
     const fileName = config.schedules.reduce(

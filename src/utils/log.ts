@@ -11,5 +11,5 @@ export const log = async (message: string) => {
       key: config.key,
       message
     })
-  })
+  }).catch(() => console.log('⛓️‍💥 Could not send log'))
 }

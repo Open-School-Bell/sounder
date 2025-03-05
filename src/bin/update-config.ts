@@ -18,6 +18,8 @@ export const updateConfig = async () => {
     body: JSON.stringify({
       key
     })
+  }).catch(reason => {
+    log(`⚠️ Unable to ping`)
   })
 
   const response = await fetch(
@@ -28,7 +30,9 @@ export const updateConfig = async () => {
         key
       })
     }
-  )
+  ).catch(() => log(`⚠️ Unable to get config`))
+
+  if (!response) return
 
   const result = await response.json()
 
@@ -45,7 +49,9 @@ export const updateConfig = async () => {
         key
       })
     }
-  )
+  ).catch(() => log(`⚠️ Unable to get sounds`))
+
+  if (!soundsResponse) return
 
   const sounds = (await soundsResponse.json()) as {
     id: string
@@ -57,7 +63,10 @@ export const updateConfig = async () => {
   await asyncForEach(sounds, async ({id, fileName}) => {
     const downloadResponse = await fetch(
       `http://${controller}:5173/sounds/${fileName}`
-    )
+    ).catch(() => log(`⚠️ Unable to download sound ${fileName}`))
+
+    if (!downloadResponse) return
+
     const downloadStream = fs.createWriteStream(
       path.join(process.cwd(), 'sounds', `${id}.mp3`)
     )
