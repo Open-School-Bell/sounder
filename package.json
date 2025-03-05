@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "ts-node-dev --respawn ./src/sounder.ts",
     "dev-bin": "ts-node-dev ./src/bin.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsc"
   },
   "author": "",
   "license": "MIT",
