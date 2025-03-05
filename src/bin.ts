@@ -9,6 +9,7 @@ program
   .option('--enroll <key>', 'Enrollment Key')
   .option('--controller <url>', 'Controller URL')
   .option('-s, --start', 'Start the Sounder')
+  .option('-u, --update-config', 'Update comfig from the controller')
   .version('0.0.0')
 
 program.parse(process.argv)

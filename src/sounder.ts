@@ -1,11 +1,15 @@
 import cron from 'node-cron'
 import express from 'express'
+import fs from 'fs'
+import path from 'path'
 
 import {updateConfig} from './bin/update-config'
 import {getConfig} from './utils/config'
 import {playSound} from './utils/play'
 import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
+
+const {writeFile} = fs.promises
 
 export const sounder = async () => {
   cron.schedule('* * * * *', async () => {
@@ -43,6 +47,10 @@ export const sounder = async () => {
   })
 
   log(`🚀 Launching Sounder`)
+  await writeFile(
+    path.join(process.cwd(), 'sounder.pid'),
+    process.pid.toString()
+  )
   const config = await getConfig()
   if (!config.key) {
     console.log('❌ Please Enroll before starting')

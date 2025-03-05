@@ -19,4 +19,4 @@ wget https://raw.githubusercontent.com/Open-School-Bell/sounder/refs/heads/main/
 sh install.sh
 ```
 
-Thats it, follwo the enroll instruction on the controller
+Thats it, follow the enroll instruction on the controller
