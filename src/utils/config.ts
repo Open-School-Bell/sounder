@@ -10,6 +10,7 @@ export type Config = {
   id: string
   day: string
   schedules: string[]
+  ringerPin: number
 }
 
 export const getConfig = async (): Promise<Config> => {

@@ -8,6 +8,7 @@ import {getConfig} from './utils/config'
 import {playSound} from './utils/play'
 import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
+import {ring} from './utils/ring'
 
 const {writeFile} = fs.promises
 
@@ -81,6 +82,9 @@ export const sounder = async () => {
     }
 
     playSound(request.body.sound as string)
+    if (request.body.ringerWire !== '' && config.ringerPin !== 0) {
+      ring(request.body.ringerWire, config.ringerPin)
+    }
 
     log(`📢 Broadcast ${request.body.sound as string}`)
 

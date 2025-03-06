@@ -24,6 +24,7 @@
     "express": "^4.21.2",
     "mkdirp": "^3.0.1",
     "node-cron": "^3.0.3",
+    "onoff": "^6.0.3",
     "play-sound": "^1.1.6"
   }
 }
