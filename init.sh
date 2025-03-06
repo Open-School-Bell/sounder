@@ -29,6 +29,10 @@ case "$1" in
         /etc/init.d/sounder start
     fi
    ;;
+   restart)
+    /etc/init.d/sounder stop
+    /etc/init.d/sounder start
+   ;;
    stop)
     echo "Stopping sounder"
     # kill application you want to stop
