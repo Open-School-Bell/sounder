@@ -6,7 +6,7 @@ const getAudioPlayer = (extname: string) => {
     case '.wav':
       return 'aplay'
     default:
-      return 'mpg321'
+      return undefined
   }
 }
 
