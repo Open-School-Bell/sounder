@@ -22,24 +22,28 @@ export const sounder = async () => {
 
     await sounderApi('/ping', {})
 
-    const fileName = config.schedules.reduce(
-      (fileName, schedule) => {
-        if (fileName) return fileName
+    const [fileName, ringerWire] = config.schedules.reduce(
+      ([fileName, ringerWire], schedule) => {
+        if (fileName) return [fileName, ringerWire]
 
-        const [time, file, dayType, days] = schedule.split('/')
+        const [time, file, dayType, days, ringer] = schedule.split('/')
 
-        if (time !== currentTime) return false
-        if (!days.split(',').includes(dayNumber)) return false
-        if (dayType !== config.day) return false
+        if (time !== currentTime) return [false, false] as [false, false]
+        if (!days.split(',').includes(dayNumber))
+          return [false, false] as [false, false]
+        if (dayType !== config.day) return [false, false] as [false, false]
 
-        return file
+        return [file, ringer]
       },
-      false as false | string
+      [false, false] as [false | string, false | string]
     )
 
     if (fileName) {
       log(`🔔 Ring Ring "${fileName}"`)
       playSound(fileName)
+      if (ringerWire && ringerWire !== '') {
+        ring(ringerWire, config.ringerPin)
+      }
     }
   })
 

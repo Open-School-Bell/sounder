@@ -38,7 +38,7 @@ export const updateConfig = async () => {
 
   await mkdirp(path.join(process.cwd(), 'sounds'))
 
-  await asyncForEach(sounds, async ({id, fileName}) => {
+  await asyncForEach(sounds, async ({fileName}) => {
     const downloadResponse = await fetch(
       `${controller}/sounds/${fileName}`
     ).catch(() => log(`⚠️ Unable to download sound ${fileName}`))
@@ -46,7 +46,7 @@ export const updateConfig = async () => {
     if (!downloadResponse) return
 
     const downloadStream = fs.createWriteStream(
-      path.join(process.cwd(), 'sounds', `${id}.mp3`)
+      path.join(process.cwd(), 'sounds', fileName)
     )
     await finished(
       Readable.fromWeb(downloadResponse.body as any).pipe(downloadStream)
