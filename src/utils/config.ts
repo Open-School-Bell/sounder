@@ -11,6 +11,7 @@ export type Config = {
   day: string
   schedules: string[]
   ringerPin: number
+  screen: boolean
 }
 
 export const getConfig = async (): Promise<Config> => {

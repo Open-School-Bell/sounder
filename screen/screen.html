@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 1vw;
+        padding: 2rem;
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      body > div {
+        padding: 2rem;
+      }
+
+      .action-box {
+        background-color: oklch(0.925 0.084 155.995);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .centre-box {
+        text-align: center;
+      }
+
+      #zoneList {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #zoneList li {
+        padding: 1rem;
+      }
+
+      #dayTitle {
+        margin-top: 0;
+      }
+
+      .selected {
+        background-color: oklch(0.882 0.059 254.128);
+      }
+
+      #actionsList {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      #actionsList {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        text-align: center;
+        grid-column-start: 1;
+        grid-column-end: 3;
+      }
+
+      .icon {
+        font-size: 6rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1 id="dayTitle"></h1>
+      <div id="daySchedule"></div>
+    </div>
+    <div class="action-box">
+      <div class="centre-box">
+        <img src="/logo.png" width="100%" alt="logo" />
+        <h1 id="name"></h1>
+      </div>
+      <ul id="zoneList">
+        <li>ZONES</li>
+      </ul>
+      <div id="actionsList"></div>
+    </div>
+    <div></div>
+    <script>
+      ;(async () => {
+        const configResponse = await fetch('/screen/config')
+        const config = await configResponse.json()
+
+        document.querySelector('#name').innerHTML = config.name
+
+        const zonesResponse = await fetch('/screen/zones')
+        const {zones} = await zonesResponse.json()
+
+        let selectedZone = zones[0].id
+
+        document.querySelector('#zoneList').innerHTML = zones
+          .map(({id, name}, i) => {
+            return `<li data-zone="${id}" class="${i === 0 ? 'selected' : ''}">${name}</li>`
+          })
+          .join('')
+
+        document.querySelectorAll('#zoneList li').forEach(selector => {
+          selector.addEventListener('click', event => {
+            document.querySelectorAll('#zoneList li').forEach(zone => {
+              zone.classList = ''
+            })
+            event.target.classList = 'selected'
+            selectedZone = event.target.dataset.zone
+          })
+        })
+
+        const dayResponse = await fetch('/screen/day')
+        const {dayType, schedules} = await dayResponse.json()
+
+        document.querySelector('#dayTitle').innerHTML = dayType
+        document.querySelector('#daySchedule').innerHTML = schedules
+          .map(({id, time}) => {
+            return `<div>${time}</div>`
+          })
+          .join('')
+
+        const actionsResponse = await fetch('/screen/actions')
+        const {actions} = await actionsResponse.json()
+
+        document.querySelector('#actionsList').innerHTML = actions
+          .map(({id, icon, name}) => {
+            return `<div data-action="${id}"><span class="icon">${icon}</span><br />${name}</div>`
+          })
+          .join('')
+
+        document.querySelectorAll('#actionsList div').forEach(selector => {
+          selector.addEventListener('click', event => {
+            const action = event.target.dataset.action
+              ? event.target.dataset.action
+              : event.target.parentElement.dataset.action
+            fetch('/screen/trigger-action', {
+              method: 'post',
+              body: JSON.stringify({
+                action,
+                zone: selectedZone
+              }),
+              headers: {'Content-Type': 'application/json'}
+            })
+          })
+        })
+      })()
+    </script>
+  </body>
+</html>

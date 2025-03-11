@@ -95,5 +95,64 @@ export const sounder = async () => {
     response.json({status: 'OK'})
   })
 
+  if (config.screen) {
+    console.log('📺 Launching Screen at http://127.0.0.1:3000')
+
+    app.use(express.static(path.join(process.cwd(), 'screen')))
+    app.get('/screen/config', async (request, response) => {
+      const config = await getConfig()
+
+      response.json(config)
+    })
+
+    app.get('/screen/zones', async (request, response) => {
+      const apiResponse = await sounderApi('/get-zones', {})
+
+      if (!apiResponse) {
+        response.json({zones: []})
+        return
+      }
+
+      const {zones} = await apiResponse.json()
+
+      response.json({zones})
+    })
+
+    app.get('/screen/day', async (request, response) => {
+      const apiResponse = await sounderApi('/get-day', {})
+
+      if (!apiResponse) {
+        response.json({zones: []})
+        return
+      }
+
+      const {schedules, dayType} = await apiResponse.json()
+
+      response.json({schedules, dayType})
+    })
+
+    app.get('/screen/actions', async (request, response) => {
+      const apiResponse = await sounderApi('/get-actions', {})
+
+      if (!apiResponse) {
+        response.json({actions: []})
+        return
+      }
+
+      const {actions} = await apiResponse.json()
+
+      response.json({actions})
+    })
+
+    app.post('/screen/trigger-action', async (request, response) => {
+      const {action, zone} = request.body
+
+      await log(`📤 Trigger action ${action} with zone ${zone}`)
+      await sounderApi('/trigger-action', {action, zone})
+
+      response.json({status: 'ok'})
+    })
+  }
+
   app.listen(3000)
 }
