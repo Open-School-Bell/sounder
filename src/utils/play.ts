@@ -14,7 +14,7 @@ export const playSound = async (fileName: string, repeat: number = 1) => {
   const filePath = path.join(process.cwd(), 'sounds', fileName)
 
   if (repeat > 1) {
-    let playCount = 0
+    let playCount = 1
     while (playCount < repeat) {
       await playSound(fileName)
       playCount += 1
