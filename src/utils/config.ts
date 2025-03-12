@@ -12,6 +12,16 @@ export type Config = {
   schedules: string[]
   ringerPin: number
   screen: boolean
+  lockdown: {
+    enable: boolean
+    entrySound: string
+    entrySoundRingerWire: string
+    exitSound: string
+    exitSoundRingerWire: string
+    times: number
+    interval: number
+    repeatRingerWire: boolean
+  }
 }
 
 export const getConfig = async (): Promise<Config> => {

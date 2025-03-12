@@ -22,6 +22,19 @@ export const sounder = async () => {
 
     await sounderApi('/ping', {})
 
+    if (config.lockdown.enable) {
+      if (date.getMinutes() % config.lockdown.interval === 0) {
+        playSound(config.lockdown.entrySound)
+        if (
+          config.lockdown.repeatRingerWire &&
+          config.lockdown.entrySoundRingerWire !== '' &&
+          config.ringerPin !== 0
+        ) {
+          ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
+        }
+      }
+    }
+
     const [fileName, ringerWire] = config.schedules.reduce(
       ([fileName, ringerWire], schedule) => {
         if (fileName) return [fileName, ringerWire]
@@ -85,7 +98,7 @@ export const sounder = async () => {
       return
     }
 
-    playSound(request.body.sound as string)
+    playSound(request.body.sound as string, request.body.times)
     if (request.body.ringerWire !== '' && config.ringerPin !== 0) {
       ring(request.body.ringerWire, config.ringerPin)
     }
@@ -93,6 +106,36 @@ export const sounder = async () => {
     log(`📢 Broadcast ${request.body.sound as string}`)
 
     response.json({status: 'OK'})
+  })
+
+  app.post('/lockdown', async (request, response) => {
+    const config = await getConfig()
+
+    if (request.body.key !== config.key) {
+      log('🔑 Bad key from controller')
+      response.json({error: 'bad key'})
+      return
+    }
+
+    log(`🚨 Lockdown ${config.lockdown.enable ? 'start' : 'end'}`)
+
+    if (config.lockdown.enable) {
+      playSound(config.lockdown.entrySound)
+      if (
+        config.ringerPin !== 0 &&
+        config.lockdown.entrySoundRingerWire !== ''
+      ) {
+        ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
+      }
+    } else {
+      playSound(config.lockdown.exitSound)
+      if (
+        config.ringerPin !== 0 &&
+        config.lockdown.exitSoundRingerWire !== ''
+      ) {
+        ring(config.lockdown.exitSoundRingerWire, config.ringerPin)
+      }
+    }
   })
 
   if (config.screen) {
