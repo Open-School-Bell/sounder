@@ -35,25 +35,27 @@ export const sounder = async () => {
       }
     }
 
-    const [fileName, ringerWire] = config.schedules.reduce(
-      ([fileName, ringerWire], schedule) => {
-        if (fileName) return [fileName, ringerWire]
+    const [fileName, ringerWire, count] = config.schedules.reduce(
+      ([fileName, ringerWire, count], schedule) => {
+        if (fileName) return [fileName, ringerWire, count]
 
-        const [time, file, dayType, days, ringer] = schedule.split('/')
+        const [time, file, dayType, days, ringer, c] = schedule.split('/')
 
-        if (time !== currentTime) return [false, false] as [false, false]
+        if (time !== currentTime)
+          return [false, false, false] as [false, false, false]
         if (!days.split(',').includes(dayNumber))
-          return [false, false] as [false, false]
-        if (dayType !== config.day) return [false, false] as [false, false]
+          return [false, false, false] as [false, false, false]
+        if (dayType !== config.day)
+          return [false, false, false] as [false, false, false]
 
-        return [file, ringer]
+        return [file, ringer, c]
       },
-      [false, false] as [false | string, false | string]
+      [false, false, false] as [false | string, false | string, false | string]
     )
 
     if (fileName) {
       log(`🔔 Ring Ring "${fileName}"`)
-      playSound(fileName)
+      playSound(fileName, parseInt(count ? count : '1'))
       if (ringerWire && ringerWire !== '') {
         ring(ringerWire, config.ringerPin)
       }
