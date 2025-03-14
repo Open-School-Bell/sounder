@@ -1,22 +1,38 @@
 import {Gpio, type High, type Low} from 'onoff'
 
-export const ring = (ringerWire: string, ringerPin: number) => {
+const sleep = (ms: number): Promise<void> => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export const ring = async (
+  ringerWire: string,
+  ringerPin: number,
+  repeat: number = 1
+) => {
   const ringer = new Gpio(ringerPin, 'out')
+
+  if (repeat > 1) {
+    let playCount = 1
+    while (playCount < repeat) {
+      await ring(ringerWire, ringerPin)
+      playCount += 1
+    }
+  }
 
   const steps = ringerWire.split(',').map(x => parseInt(x))
 
   let action: High | Low = 0
   let count = 0
-  ringer.writeSync(1)
-  steps.forEach(step => {
-    setTimeout(
-      () => {
-        ringer.writeSync(action)
-        action = action === 1 ? 0 : 1
-      },
-      step * 1000 + count * 1000
-    )
-    count += step
-  })
-  setTimeout(() => ringer.unexport(), count * 1000)
+
+  while (count < steps.length) {
+    ringer.writeSync(action)
+    await sleep(steps.shift()! * 1000)
+    count += 1
+    action = action === 1 ? 0 : 1
+  }
+
+  ringer.writeSync(0)
+  ringer.unexport()
+
+  return
 }

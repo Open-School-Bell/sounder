@@ -57,7 +57,7 @@ export const sounder = async () => {
       log(`🔔 Ring Ring "${fileName}"`)
       playSound(fileName, parseInt(count ? count : '1'))
       if (ringerWire && ringerWire !== '') {
-        ring(ringerWire, config.ringerPin)
+        ring(ringerWire, config.ringerPin, parseInt(count ? count : '1'))
       }
     }
   })
@@ -102,7 +102,7 @@ export const sounder = async () => {
 
     playSound(request.body.sound as string, request.body.times)
     if (request.body.ringerWire !== '' && config.ringerPin !== 0) {
-      ring(request.body.ringerWire, config.ringerPin)
+      ring(request.body.ringerWire, config.ringerPin, request.body.times)
     }
 
     log(`📢 Broadcast ${request.body.sound as string}`)
