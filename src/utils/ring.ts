@@ -19,12 +19,13 @@ export const ring = async (
 
   const steps = ringerWire.split(',').map(x => parseInt(x))
 
-  let action: High | Low = 0
+  let action: High | Low = 1
   let count = 0
 
   const ringer = new Gpio(ringerPin, 'out')
+  const stepCount = steps.length
 
-  while (count < steps.length) {
+  while (count < stepCount) {
     ringer.writeSync(action)
     await sleep(steps.shift()! * 1000)
     count += 1
