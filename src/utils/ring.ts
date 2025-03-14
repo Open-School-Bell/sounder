@@ -9,8 +9,6 @@ export const ring = async (
   ringerPin: number,
   repeat: number = 1
 ) => {
-  const ringer = new Gpio(ringerPin, 'out')
-
   if (repeat > 1) {
     let playCount = 1
     while (playCount < repeat) {
@@ -23,6 +21,8 @@ export const ring = async (
 
   let action: High | Low = 0
   let count = 0
+
+  const ringer = new Gpio(ringerPin, 'out')
 
   while (count < steps.length) {
     ringer.writeSync(action)
