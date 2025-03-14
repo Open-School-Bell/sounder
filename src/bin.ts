@@ -21,9 +21,9 @@ if (options.enroll) {
     throw new Error('Controller URL must be set')
   }
 
-  enroll(options.enroll, options.controller)
+  void enroll(options.enroll, options.controller)
 }
 
 if (options.start) {
-  sounder()
+  void sounder()
 }

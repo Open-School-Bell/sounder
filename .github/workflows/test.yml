@@ -1,0 +1,118 @@
+name: 🧪 Test
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+  pull_request: {}
+
+jobs:
+  prepare:
+    name: 🎫 Prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 💾 Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key:
+            node-modules-${{ hashFiles('package-lock.json',
+            'prisma/schema.prisma') }}
+
+      - name: 📥 Download deps
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm install
+
+  lint:
+    name: ⬣ ESLint
+    needs: prepare
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-lint
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 💾 Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key:
+            node-modules-${{ hashFiles('package-lock.json',
+            'prisma/schema.prisma') }}
+
+      - name: 🔬 Lint
+        run: npm run lint
+
+  prettier:
+    name: ✨Prettier
+    needs: prepare
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-prettier
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 💾 Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key:
+            node-modules-${{ hashFiles('package-lock.json',
+            'prisma/schema.prisma') }}
+
+      - name: ✨ Prettier Check
+        run: npm run prettier
+
+  test:
+    name: 🧪 Test
+    needs: prepare
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-prettier
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 💾 Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key:
+            node-modules-${{ hashFiles('package-lock.json',
+            'prisma/schema.prisma') }}
+
+      - name: 🧪 vitest
+        run: npm run ci

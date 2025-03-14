@@ -10,63 +10,20 @@ import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
 import {ring} from './utils/ring'
 
+import {minutely} from './events/minutely'
+
 const {writeFile} = fs.promises
 
 export const sounder = async () => {
   cron.schedule('* * * * *', async () => {
-    const date = new Date()
-    const currentTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-    const dayNumber = `${date.getDay() === 0 ? 7 : date.getDay()}`
-
-    const config = await getConfig()
-
-    await sounderApi('/ping', {})
-
-    if (config.lockdown.enable) {
-      if (date.getMinutes() % config.lockdown.interval === 0) {
-        playSound(config.lockdown.entrySound)
-        if (
-          config.lockdown.repeatRingerWire &&
-          config.lockdown.entrySoundRingerWire !== '' &&
-          config.ringerPin !== 0
-        ) {
-          ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
-        }
-      }
-    }
-
-    const [fileName, ringerWire, count] = config.schedules.reduce(
-      ([fileName, ringerWire, count], schedule) => {
-        if (fileName) return [fileName, ringerWire, count]
-
-        const [time, file, dayType, days, ringer, c] = schedule.split('/')
-
-        if (time !== currentTime)
-          return [false, false, false] as [false, false, false]
-        if (!days.split(',').includes(dayNumber))
-          return [false, false, false] as [false, false, false]
-        if (dayType !== config.day)
-          return [false, false, false] as [false, false, false]
-
-        return [file, ringer, c]
-      },
-      [false, false, false] as [false | string, false | string, false | string]
-    )
-
-    if (fileName) {
-      log(`🔔 Ring Ring "${fileName}"`)
-      playSound(fileName, parseInt(count ? count : '1'))
-      if (ringerWire && ringerWire !== '') {
-        ring(ringerWire, config.ringerPin, parseInt(count ? count : '1'))
-      }
-    }
+    await minutely()
   })
 
-  cron.schedule('0 * * * *', () => {
-    updateConfig()
+  cron.schedule('0 * * * *', async () => {
+    await updateConfig()
   })
 
-  log(`🚀 Launching Sounder`)
+  await log(`🚀 Launching Sounder`)
   await writeFile(
     path.join(process.cwd(), 'sounder.pid'),
     process.pid.toString()
@@ -74,8 +31,9 @@ export const sounder = async () => {
   const config = await getConfig()
   if (!config.key) {
     console.log('❌ Please Enroll before starting')
+    process.exit()
   }
-  updateConfig()
+  await updateConfig()
 
   const app = express()
 
@@ -87,25 +45,25 @@ export const sounder = async () => {
     response.json({status: 'OK'})
   })
 
-  app.get('/update', (request, response) => {
-    updateConfig()
+  app.get('/update', async (request, response) => {
+    await updateConfig()
 
     response.json({status: 'OK'})
   })
 
-  app.post('/play', (request, response) => {
+  app.post('/play', async (request, response) => {
     if (request.body.key !== config.key) {
-      log('🔑 Bad key from controller')
+      await log('🔑 Bad key from controller')
       response.json({error: 'bad key'})
       return
     }
 
-    playSound(request.body.sound as string, request.body.times)
+    void playSound(request.body.sound as string, request.body.times)
     if (request.body.ringerWire !== '' && config.ringerPin !== 0) {
-      ring(request.body.ringerWire, config.ringerPin, request.body.times)
+      void ring(request.body.ringerWire, config.ringerPin, request.body.times)
     }
 
-    log(`📢 Broadcast ${request.body.sound as string}`)
+    await log(`📢 Broadcast ${request.body.sound as string}`)
 
     response.json({status: 'OK'})
   })
@@ -114,28 +72,28 @@ export const sounder = async () => {
     const config = await getConfig()
 
     if (request.body.key !== config.key) {
-      log('🔑 Bad key from controller')
+      await log('🔑 Bad key from controller')
       response.json({error: 'bad key'})
       return
     }
 
-    log(`🚨 Lockdown ${config.lockdown.enable ? 'start' : 'end'}`)
+    await log(`🚨 Lockdown ${config.lockdown.enable ? 'start' : 'end'}`)
 
     if (config.lockdown.enable) {
-      playSound(config.lockdown.entrySound)
+      void playSound(config.lockdown.entrySound)
       if (
         config.ringerPin !== 0 &&
         config.lockdown.entrySoundRingerWire !== ''
       ) {
-        ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
+        void ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
       }
     } else {
-      playSound(config.lockdown.exitSound)
+      void playSound(config.lockdown.exitSound)
       if (
         config.ringerPin !== 0 &&
         config.lockdown.exitSoundRingerWire !== ''
       ) {
-        ring(config.lockdown.exitSoundRingerWire, config.ringerPin)
+        void ring(config.lockdown.exitSoundRingerWire, config.ringerPin)
       }
     }
   })

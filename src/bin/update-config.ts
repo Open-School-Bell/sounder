@@ -25,7 +25,7 @@ export const updateConfig = async () => {
   const content = JSON.stringify({...result, controller, key}, null, ' ')
 
   await writeFile(path.join(process.cwd(), 'sounder.json'), content)
-  log(`✅ Config updated!`)
+  await log(`✅ Config updated!`)
 
   const soundsResponse = await sounderApi('/get-audio', {})
 
@@ -53,5 +53,5 @@ export const updateConfig = async () => {
     )
   })
 
-  log(`🔊 Sounds Downloaded`)
+  await log(`🔊 Sounds Downloaded`)
 }
