@@ -94,7 +94,7 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-prettier
+      group: ${{ github.workflow }}-${{ github.ref }}-test
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - name: ⬇️ Checkout repo
