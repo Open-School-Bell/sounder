@@ -6,6 +6,7 @@ import {log} from '../../src/utils/log'
 
 describe('Log', () => {
   it('should log messages', async () => {
+    vi.mock('fs/promises')
     const mock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     const messages: string[] = []

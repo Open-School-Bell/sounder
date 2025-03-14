@@ -1,4 +1,4 @@
-import {describe, it, vi, expect, afterAll} from 'vitest'
+import {describe, it, vi} from 'vitest'
 import {handlers} from '../_helpers/handlers'
 import {setupServer} from 'msw/node'
 
@@ -11,7 +11,7 @@ describe('Update Config', () => {
 
   it('should update config', async () => {
     vi.mock('fs/promises')
-    const logMock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     await updateConfig()
   })
