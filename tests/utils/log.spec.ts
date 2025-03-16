@@ -7,7 +7,7 @@ import {log} from '../../src/utils/log'
 
 describe('Log', () => {
   it('should log messages', async () => {
-    vi.mock('fs', importOriginal => {
+    vi.mock('fs', () => {
       return {
         default: {
           promises: {
