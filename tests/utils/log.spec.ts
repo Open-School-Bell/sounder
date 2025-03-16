@@ -1,12 +1,30 @@
 import {describe, it, vi, expect} from 'vitest'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from 'msw/node'
+import {faker} from '@faker-js/faker'
 
 import {log} from '../../src/utils/log'
 
 describe('Log', () => {
   it('should log messages', async () => {
-    vi.mock('fs/promises')
+    vi.mock('fs', importOriginal => {
+      return {
+        default: {
+          promises: {
+            readFile: async () => {
+              return {
+                toString: () => {
+                  return JSON.stringify({
+                    id: faker.string.uuid(),
+                    controller: 'http://vitest'
+                  })
+                }
+              }
+            }
+          }
+        }
+      }
+    })
     const mock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     const messages: string[] = []

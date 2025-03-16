@@ -15,7 +15,7 @@ sudo apt-get upgrade
 Download and run `install.sh`
 
 ```sh
-wget https://raw.githubusercontent.com/Open-School-Bell/sounder/refs/heads/main/isntall.sh
+wget https://raw.githubusercontent.com/Open-School-Bell/sounder/refs/heads/main/install.sh
 sh install.sh
 ```
 

@@ -1,7 +1,7 @@
 import path from 'path'
 import player from 'play-sound'
 
-const getAudioPlayer = (extname: string) => {
+export const getAudioPlayer = (extname: string) => {
   switch (extname) {
     case '.wav':
       return 'aplay'
