@@ -1,22 +1,31 @@
 # Sounder
 
-## Setting Up yout Pi
+## Install
 
-Use the RPi Imager to setup your SD Card with _Raspberry PI OS LITE_ and boot
-your fresh install.
+[Installting the Sounder](https://openschoolbell.co.uk/docs/installation/sounder/)
 
-Logon and make sure your pi is up-to-date
+## CLI
 
-```sh
-sudo apt-get update
-sudo apt-get upgrade
-```
-
-Download and run `install.sh`
+Enroll the sounder in a controller
 
 ```sh
-wget https://raw.githubusercontent.com/Open-School-Bell/sounder/refs/heads/main/install.sh
-sh install.sh
+sounder --enroll <key> --controller http://host:port
 ```
 
-Thats it, follow the enroll instruction on the controller
+Start the sounder.
+
+```sh
+sounder --start
+```
+
+Update configuration
+
+```sh
+sounder -u
+```
+
+Update the controller address
+
+```sh
+sounder -c http://host:port
+```
