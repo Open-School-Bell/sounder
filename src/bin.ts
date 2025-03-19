@@ -2,15 +2,18 @@ import {Command} from 'commander'
 
 import {enroll} from './bin/enroll'
 import {sounder} from './sounder'
+import {updateConfig, updateController} from './bin/update-config'
+
+import {version} from '../package.json'
 
 const program = new Command()
 
 program
   .option('--enroll <key>', 'Enrollment Key')
-  .option('--controller <url>', 'Controller URL')
+  .option('-c, --controller <url>', 'Controller URL')
   .option('-s, --start', 'Start the Sounder')
   .option('-u, --update-config', 'Update comfig from the controller')
-  .version('0.0.0')
+  .version(version)
 
 program.parse(process.argv)
 
@@ -22,6 +25,14 @@ if (options.enroll) {
   }
 
   void enroll(options.enroll, options.controller)
+}
+
+if (options.controller) {
+  void updateController(options.controller)
+}
+
+if (options.updateConfig) {
+  void updateConfig()
 }
 
 if (options.start) {

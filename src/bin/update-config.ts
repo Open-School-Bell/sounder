@@ -55,3 +55,15 @@ export const updateConfig = async () => {
 
   await log(`🔊 Sounds Downloaded`)
 }
+
+export const updateController = async (newController: string) => {
+  const config = await getConfig()
+
+  config.controller = newController
+
+  await writeFile(
+    path.join(process.cwd(), 'sounder.json'),
+    JSON.stringify(config)
+  )
+  await log(`✅ Controller updated!`)
+}
