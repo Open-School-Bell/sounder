@@ -33,7 +33,8 @@ export const config = [
       '**/dist/**',
       '**/coverage/**',
       '.test.env',
-      'tests/**'
+      'tests/**',
+      'vitest.config.ts'
     ]
   },
 
