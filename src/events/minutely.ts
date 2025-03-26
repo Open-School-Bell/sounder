@@ -15,13 +15,17 @@ export const minutely = async () => {
 
   if (config.lockdown.enable) {
     if (date.getMinutes() % config.lockdown.interval === 0) {
-      void playSound(config.lockdown.entrySound)
+      void playSound(config.lockdown.entrySound, config.lockdown.times)
       if (
         config.lockdown.repeatRingerWire &&
         config.lockdown.entrySoundRingerWire !== '' &&
         config.ringerPin !== 0
       ) {
-        void ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
+        void ring(
+          config.lockdown.entrySoundRingerWire,
+          config.ringerPin,
+          config.lockdown.times
+        )
       }
     }
   }

@@ -80,12 +80,16 @@ export const sounder = async () => {
     await log(`🚨 Lockdown ${config.lockdown.enable ? 'start' : 'end'}`)
 
     if (config.lockdown.enable) {
-      void playSound(config.lockdown.entrySound)
+      void playSound(config.lockdown.entrySound, config.lockdown.times)
       if (
         config.ringerPin !== 0 &&
         config.lockdown.entrySoundRingerWire !== ''
       ) {
-        void ring(config.lockdown.entrySoundRingerWire, config.ringerPin)
+        void ring(
+          config.lockdown.entrySoundRingerWire,
+          config.ringerPin,
+          config.lockdown.times
+        )
       }
     } else {
       void playSound(config.lockdown.exitSound)
@@ -93,7 +97,11 @@ export const sounder = async () => {
         config.ringerPin !== 0 &&
         config.lockdown.exitSoundRingerWire !== ''
       ) {
-        void ring(config.lockdown.exitSoundRingerWire, config.ringerPin)
+        void ring(
+          config.lockdown.exitSoundRingerWire,
+          config.ringerPin,
+          config.lockdown.times
+        )
       }
     }
   })
