@@ -15,6 +15,7 @@ export const minutely = async () => {
 
   if (config.lockdown.enable) {
     if (date.getMinutes() % config.lockdown.interval === 0) {
+      await log('🚨 Lockdown re-broadcast')
       void playSound(config.lockdown.entrySound, config.lockdown.times)
       if (
         config.lockdown.repeatRingerWire &&
