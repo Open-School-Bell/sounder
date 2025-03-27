@@ -45,7 +45,13 @@ export const sounder = async () => {
     response.json({status: 'OK'})
   })
 
-  app.get('/update', async (request, response) => {
+  app.post('/update', async (request, response) => {
+    if (request.body.key !== config.key) {
+      await log('🔑 Bad key from controller')
+      response.json({error: 'bad key'})
+      return
+    }
+
     await updateConfig()
 
     response.json({status: 'OK'})
