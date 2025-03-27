@@ -75,6 +75,8 @@ export const sounder = async () => {
   })
 
   app.post('/lockdown', async (request, response) => {
+    await updateConfig()
+
     const config = await getConfig()
 
     if (request.body.key !== config.key) {
@@ -110,6 +112,8 @@ export const sounder = async () => {
         )
       }
     }
+
+    response.json({status: 'OK'})
   })
 
   if (config.screen) {
