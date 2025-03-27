@@ -27,7 +27,7 @@ if (options.enroll) {
   void enroll(options.enroll, options.controller)
 }
 
-if (options.controller) {
+if (options.controller && !options.enroll) {
   void updateController(options.controller)
 }
 
