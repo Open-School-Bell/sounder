@@ -16,6 +16,7 @@
         font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-style: normal;
+        background-color: black;
       }
 
       body > div {
@@ -46,6 +47,15 @@
         margin-top: 0;
       }
 
+      #dayBox {
+        background-color: oklch(0.869 0.005 56.366);
+      }
+
+      #daySchedule div {
+        text-align: center;
+        padding: 4px;
+      }
+
       .selected {
         background-color: oklch(0.882 0.059 254.128);
       }
@@ -69,10 +79,14 @@
         font-size: 6rem;
         text-align: center;
       }
+
+      #statusBox {
+        background-color: oklch(0.809 0.105 251.813);
+      }
     </style>
   </head>
   <body>
-    <div>
+    <div id="dayBox">
       <h1 id="dayTitle"></h1>
       <div id="daySchedule"></div>
     </div>
@@ -86,8 +100,45 @@
       </ul>
       <div id="actionsList"></div>
     </div>
-    <div></div>
+    <div id="statusBox">
+      <p>System Status: <span id="systemStatus"></span></p>
+      <p>Lockdown: <span id="lockdownStatus"></span></p>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Last Seen</th>
+          </tr>
+        </thead>
+        <tbody id="sounderStatus"></tbody>
+      </table>
+    </div>
     <script>
+      const updateStatus = async () => {
+        const statusResponse = await fetch('/screen/status')
+        const {system, lockdown, sounders} = await statusResponse.json()
+
+        document.querySelector('#systemStatus').innerHTML = system
+        document.querySelector('#lockdownStatus').innerHTML = lockdown
+          ? 'Yes'
+          : 'No'
+
+        document.querySelector('#sounderStatus').innerHTML = sounders
+          .map(sounder => {
+            return `<tr>
+              <td>${sounder.status}</td>
+              <td>${sounder.name}</td>
+              <td>${sounder.lastSeen}</td>
+            </tr>`
+          })
+          .join('')
+      }
+
+      setInterval(() => {
+        updateStatus()
+      }, 10000)
+      updateStatus()
       ;(async () => {
         const configResponse = await fetch('/screen/config')
         const config = await configResponse.json()
@@ -139,14 +190,16 @@
             const action = event.target.dataset.action
               ? event.target.dataset.action
               : event.target.parentElement.dataset.action
-            fetch('/screen/trigger-action', {
-              method: 'post',
-              body: JSON.stringify({
-                action,
-                zone: selectedZone
-              }),
-              headers: {'Content-Type': 'application/json'}
-            })
+            if (confirm('Are you sure you want to trigger this action?')) {
+              fetch('/screen/trigger-action', {
+                method: 'post',
+                body: JSON.stringify({
+                  action,
+                  zone: selectedZone
+                }),
+                headers: {'Content-Type': 'application/json'}
+              })
+            }
           })
         })
       })()

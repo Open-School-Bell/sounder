@@ -165,6 +165,19 @@ export const sounder = async () => {
       response.json({actions})
     })
 
+    app.get('/screen/status', async (request, response) => {
+      const apiResponse = await sounderApi('/get-status', {})
+
+      if (!apiResponse) {
+        response.json({system: 'down', lockdown: false, sounders: []})
+        return
+      }
+
+      const {system, lockdown, sounders} = await apiResponse.json()
+
+      response.json({system, lockdown, sounders})
+    })
+
     app.post('/screen/trigger-action', async (request, response) => {
       const {action, zone} = request.body
 
