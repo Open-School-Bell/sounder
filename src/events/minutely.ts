@@ -52,7 +52,7 @@ export const minutely = async () => {
   if (fileName) {
     await log(`🔔 Ring Ring "${fileName}"`)
     void playSound(fileName, parseInt(count ? count : '1'))
-    if (ringerWire && ringerWire !== '') {
+    if (ringerWire && ringerWire !== '' && ringerWire !== '0') {
       void ring(ringerWire, config.ringerPin, parseInt(count ? count : '1'))
     }
   }
