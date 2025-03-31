@@ -12,7 +12,7 @@
         display: grid;
         grid-template-columns: 1fr 2fr 1fr;
         gap: 1vw;
-        padding: 2rem;
+        padding: 5vh;
         font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-style: normal;
@@ -49,6 +49,8 @@
 
       #dayBox {
         background-color: oklch(0.869 0.005 56.366);
+        overflow-y: scroll;
+        height: 80vh;
       }
 
       #daySchedule div {
@@ -76,7 +78,7 @@
       }
 
       .icon {
-        font-size: 6rem;
+        font-size: 3rem;
         text-align: center;
       }
 
@@ -113,6 +115,11 @@
         </thead>
         <tbody id="sounderStatus"></tbody>
       </table>
+      <a
+        href="javascript:location.reload(true)"
+        style="text-decoration: none; margin-top: 2rem; display: inline-block"
+        >♻️</a
+      >
     </div>
     <script>
       const updateStatus = async () => {
