@@ -9,6 +9,7 @@ import {playSound} from './utils/play'
 import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
 import {ring} from './utils/ring'
+import {VERSION} from './constants'
 
 import {minutely} from './events/minutely'
 
@@ -43,6 +44,16 @@ export const sounder = async () => {
 
   app.get('/', (request, response) => {
     response.json({status: 'OK'})
+  })
+
+  app.get('/status', async (request, response) => {
+    const config = await getConfig()
+
+    response.json({
+      name: config.name,
+      lockdown: config.lockdown.enable,
+      version: VERSION
+    })
   })
 
   app.post('/update', async (request, response) => {
