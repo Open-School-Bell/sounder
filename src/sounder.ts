@@ -130,14 +130,30 @@ export const sounder = async () => {
   if (config.screen) {
     console.log('📺 Launching Screen at http://127.0.0.1:3000')
 
+    const allowedIps = ['::1', '127.0.0.1']
+
     app.use(express.static(path.join(process.cwd(), 'screen')))
     app.get('/screen/config', async (request, response) => {
+      if (
+        !request.socket.remoteAddress ||
+        !allowedIps.includes(request.socket.remoteAddress)
+      ) {
+        response.json({error: 403})
+      }
+
       const config = await getConfig()
 
       response.json(config)
     })
 
     app.get('/screen/zones', async (request, response) => {
+      if (
+        !request.socket.remoteAddress ||
+        !allowedIps.includes(request.socket.remoteAddress)
+      ) {
+        response.json({error: 403})
+      }
+
       const apiResponse = await sounderApi('/get-zones', {})
 
       if (!apiResponse) {
@@ -151,6 +167,13 @@ export const sounder = async () => {
     })
 
     app.get('/screen/day', async (request, response) => {
+      if (
+        !request.socket.remoteAddress ||
+        !allowedIps.includes(request.socket.remoteAddress)
+      ) {
+        response.json({error: 403})
+      }
+
       const apiResponse = await sounderApi('/get-day', {})
 
       if (!apiResponse) {
@@ -164,6 +187,13 @@ export const sounder = async () => {
     })
 
     app.get('/screen/actions', async (request, response) => {
+      if (
+        !request.socket.remoteAddress ||
+        !allowedIps.includes(request.socket.remoteAddress)
+      ) {
+        response.json({error: 403})
+      }
+
       const apiResponse = await sounderApi('/get-actions', {})
 
       if (!apiResponse) {
@@ -177,6 +207,13 @@ export const sounder = async () => {
     })
 
     app.get('/screen/status', async (request, response) => {
+      if (
+        !request.socket.remoteAddress ||
+        !allowedIps.includes(request.socket.remoteAddress)
+      ) {
+        response.json({error: 403})
+      }
+
       const apiResponse = await sounderApi('/get-status', {})
 
       if (!apiResponse) {
@@ -190,6 +227,13 @@ export const sounder = async () => {
     })
 
     app.post('/screen/trigger-action', async (request, response) => {
+      if (
+        !request.socket.remoteAddress ||
+        !allowedIps.includes(request.socket.remoteAddress)
+      ) {
+        response.json({error: 403})
+      }
+
       const {action, zone} = request.body
 
       await log(`📤 Trigger action ${action} with zone ${zone}`)
