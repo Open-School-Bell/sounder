@@ -111,7 +111,7 @@ export const sounder = async () => {
         )
       }
     } else {
-      void playSound(config.lockdown.exitSound)
+      void playSound(config.lockdown.exitSound, config.lockdown.exitTimes)
       if (
         config.ringerPin !== 0 &&
         config.lockdown.exitSoundRingerWire !== ''
@@ -119,7 +119,7 @@ export const sounder = async () => {
         void ring(
           config.lockdown.exitSoundRingerWire,
           config.ringerPin,
-          config.lockdown.times
+          config.lockdown.exitTimes
         )
       }
     }
