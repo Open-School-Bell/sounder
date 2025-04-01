@@ -19,6 +19,7 @@ export type Config = {
     exitSound: string
     exitSoundRingerWire: string
     times: number
+    exitTimes: number
     interval: number
     repeatRingerWire: boolean
   }
