@@ -7,4 +7,7 @@ sudo service sounder stop
 
 sudo cp /var/osb/sounder/init.sh /etc/init.d/sounder
 sudo chmod +x /etc/init.d/sounder
+
+sudo systemctl daemon-reload
+
 sudo service sounder start

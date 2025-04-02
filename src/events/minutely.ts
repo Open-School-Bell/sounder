@@ -3,6 +3,7 @@ import {sounderApi} from '../utils/sounder-api'
 import {playSound} from '../utils/play'
 import {ring} from '../utils/ring'
 import {log} from '../utils/log'
+import {VERSION} from '../constants'
 
 export const minutely = async () => {
   const date = new Date()
@@ -11,7 +12,7 @@ export const minutely = async () => {
 
   const config = await getConfig()
 
-  await sounderApi('/ping', {})
+  await sounderApi('/ping', {version: VERSION})
 
   if (config.lockdown.enable) {
     if (date.getMinutes() % config.lockdown.interval === 0) {
