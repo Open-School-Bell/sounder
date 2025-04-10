@@ -17,7 +17,7 @@ export const ring = async (
     }
   }
 
-  const steps = ringerWire.split(',').map(x => parseInt(x))
+  const steps = ringerWire.split(',').map(x => parseFloat(x))
 
   let action: High | Low = 1
   let count = 0
