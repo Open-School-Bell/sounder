@@ -40,8 +40,6 @@ export const sounder = async () => {
 
   app.use(express.json())
 
-  app.all('/')
-
   app.get('/', (request, response) => {
     response.json({status: 'OK'})
   })
