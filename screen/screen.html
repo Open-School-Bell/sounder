@@ -145,7 +145,26 @@
       setInterval(() => {
         updateStatus()
       }, 10000)
+
       updateStatus()
+
+      const updateDay = async () => {
+        const dayResponse = await fetch('/screen/day')
+        const {dayType, schedules} = await dayResponse.json()
+
+        document.querySelector('#dayTitle').innerHTML = dayType
+        document.querySelector('#daySchedule').innerHTML = schedules
+          .map(({id, time}) => {
+            return `<div>${time}</div>`
+          })
+          .join('')
+      }
+
+      setInterval(() => {
+        updateDay()
+      }, 300000)
+
+      updateDay()
       ;(async () => {
         const configResponse = await fetch('/screen/config')
         const config = await configResponse.json()
@@ -172,16 +191,6 @@
             selectedZone = event.target.dataset.zone
           })
         })
-
-        const dayResponse = await fetch('/screen/day')
-        const {dayType, schedules} = await dayResponse.json()
-
-        document.querySelector('#dayTitle').innerHTML = dayType
-        document.querySelector('#daySchedule').innerHTML = schedules
-          .map(({id, time}) => {
-            return `<div>${time}</div>`
-          })
-          .join('')
 
         const actionsResponse = await fetch('/screen/actions')
         const {actions} = await actionsResponse.json()
