@@ -5,3 +5,5 @@ coverage/
 
 sounder.json
 sounder.pid
+generated/prisma
+prisma/sounder.db

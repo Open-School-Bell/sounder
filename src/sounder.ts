@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 import {updateConfig} from './bin/update-config'
-import {getConfig} from './utils/config'
+//import {getConfig} from './utils/config'
 import {playSound} from './utils/play'
 import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
@@ -12,6 +12,7 @@ import {ring} from './utils/ring'
 import {VERSION} from './constants'
 
 import {minutely} from './events/minutely'
+import {getSetting, getSettings, getSounds} from './utils/prisma'
 
 const {writeFile} = fs.promises
 
@@ -29,8 +30,9 @@ export const sounder = async () => {
     path.join(process.cwd(), 'sounder.pid'),
     process.pid.toString()
   )
-  const config = await getConfig()
-  if (!config.key) {
+
+  const sounderKey = await getSetting('sounderKey', '')
+  if (sounderKey === '') {
     console.log('❌ Please Enroll before starting')
     process.exit()
   }
@@ -45,17 +47,20 @@ export const sounder = async () => {
   })
 
   app.get('/status', async (request, response) => {
-    const config = await getConfig()
+    const {sounderName, lockdownEnable} = await getSettings([
+      'sounderName',
+      'lockdownEnable'
+    ])
 
     response.json({
-      name: config.name,
-      lockdown: config.lockdown.enable,
+      name: sounderName,
+      lockdown: lockdownEnable,
       version: VERSION
     })
   })
 
   app.post('/update', async (request, response) => {
-    if (request.body.key !== config.key) {
+    if (request.body.key !== sounderKey) {
       await log('🔑 Bad key from controller')
       response.json({error: 'bad key'})
       return
@@ -67,15 +72,17 @@ export const sounder = async () => {
   })
 
   app.post('/play', async (request, response) => {
-    if (request.body.key !== config.key) {
+    if (request.body.key !== sounderKey) {
       await log('🔑 Bad key from controller')
       response.json({error: 'bad key'})
       return
     }
 
+    const sounderPin = await getSetting('sounderPin')
+
     void playSound(request.body.sound as string, request.body.times)
-    if (request.body.ringerWire !== '' && config.ringerPin !== 0) {
-      void ring(request.body.ringerWire, config.ringerPin, request.body.times)
+    if (request.body.ringerWire !== '' && sounderPin !== 0) {
+      void ring(request.body.ringerWire, sounderPin, request.body.times)
     }
 
     await log(`📢 Broadcast ${request.body.sound as string}`)
@@ -86,46 +93,53 @@ export const sounder = async () => {
   app.post('/lockdown', async (request, response) => {
     await updateConfig()
 
-    const config = await getConfig()
+    const {
+      lockdownEnable,
+      lockdownEntrySound,
+      lockdownExitSound,
+      lockdownTimes,
+      lockdownExitTimes,
+      sounderPin
+    } = await getSettings([
+      'lockdownEnable',
+      'lockdownEntrySound',
+      'lockdownExitSound',
+      'lockdownTimes',
+      'lockdownExitTimes',
+      'sounderPin'
+    ])
 
-    if (request.body.key !== config.key) {
+    if (request.body.key !== sounderKey) {
       await log('🔑 Bad key from controller')
       response.json({error: 'bad key'})
       return
     }
 
-    await log(`🚨 Lockdown ${config.lockdown.enable ? 'start' : 'end'}`)
+    await log(`🚨 Lockdown ${lockdownEnable ? 'start' : 'end'}`)
 
-    if (config.lockdown.enable) {
-      void playSound(config.lockdown.entrySound, config.lockdown.times)
-      if (
-        config.ringerPin !== 0 &&
-        config.lockdown.entrySoundRingerWire !== ''
-      ) {
-        void ring(
-          config.lockdown.entrySoundRingerWire,
-          config.ringerPin,
-          config.lockdown.times
-        )
+    const [entrySound, exitSound] = await getSounds([
+      lockdownEntrySound,
+      lockdownExitSound
+    ])
+
+    if (lockdownEnable) {
+      void playSound(entrySound.fileName, lockdownTimes)
+      if (sounderPin !== 0 && entrySound.ringerWire !== '') {
+        void ring(entrySound.ringerWire, sounderPin, lockdownTimes)
       }
     } else {
-      void playSound(config.lockdown.exitSound, config.lockdown.exitTimes)
-      if (
-        config.ringerPin !== 0 &&
-        config.lockdown.exitSoundRingerWire !== ''
-      ) {
-        void ring(
-          config.lockdown.exitSoundRingerWire,
-          config.ringerPin,
-          config.lockdown.exitTimes
-        )
+      void playSound(exitSound.fileName, lockdownExitTimes)
+      if (sounderPin !== 0 && exitSound.ringerWire !== '') {
+        void ring(exitSound.ringerWire, sounderPin, lockdownExitTimes)
       }
     }
 
     response.json({status: 'OK'})
   })
 
-  if (config.screen) {
+  const screenEnabled = await getSetting('screenEnabled')
+
+  if (screenEnabled) {
     console.log('📺 Launching Screen at http://127.0.0.1:3000')
 
     const allowedIps = ['::1', '127.0.0.1']
@@ -139,7 +153,7 @@ export const sounder = async () => {
         response.json({error: 403})
       }
 
-      const config = await getConfig()
+      const config = await getSettings(['sounderName'])
 
       response.json(config)
     })

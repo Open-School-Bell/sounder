@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Config {
+  id    String @id @default(uuid())
+  key   String @unique()
+  value String
+}
+
+model Sound {
+  id         String @id @default(uuid())
+  name       String
+  fileName   String
+  ringerWire String @default("")
+
+  queueEntries SoundQueue[]
+}
+
+model SoundQueue {
+  id String @id @default(uuid())
+
+  sound   Sound    @relation(fields: [soundId], references: [id])
+  soundId String
+  order   DateTime @default(now())
+}

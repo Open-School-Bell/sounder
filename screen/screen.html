@@ -169,7 +169,7 @@
         const configResponse = await fetch('/screen/config')
         const config = await configResponse.json()
 
-        document.querySelector('#name').innerHTML = config.name
+        document.querySelector('#name').innerHTML = config.sounderName
 
         const zonesResponse = await fetch('/screen/zones')
         const {zones} = await zonesResponse.json()
