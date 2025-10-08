@@ -22,10 +22,9 @@ export const handlers = [
       lockdown: {
         enable: false,
         entrySound: '',
-        entrySoundRingerWire: '',
         exitSound: '',
-        exitSoundRingerWire: '',
         times: 1,
+        exitTimes: 1,
         interval: 5,
         repeatRingerWire: false
       }
@@ -35,6 +34,9 @@ export const handlers = [
     return HttpResponse.json({status: 'ok'})
   }),
   http.post('*/sounder-api/get-audio', async () => {
+    return HttpResponse.json([])
+  }),
+  http.post('*/sounder-api/get-sounds', async () => {
     return HttpResponse.json([])
   })
 ]

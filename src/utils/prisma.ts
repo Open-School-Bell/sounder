@@ -64,15 +64,13 @@ export const getSettings = async <Keys extends ConfigKey>(keys: Keys[]) => {
     [key in Keys]: ConfigType[key]
   }
 
-  const promises = keys.map(k => {
-    return new Promise(async () => {
-      data[k] = JSON.parse(
-        (await prisma.config.findFirstOrThrow({where: {key: k}})).value
-      )
-    })
-  })
+  const config = (await prisma.config.findMany({
+    where: {key: {in: keys}}
+  })) as any as Array<{key: Keys; value: string}>
 
-  await Promise.all(promises)
+  config.forEach(({key, value}) => {
+    data[key] = JSON.parse(value)
+  })
 
   return data
 }
@@ -109,8 +107,9 @@ export const setSettings = async <Keys extends ConfigKey>(settings: {
   const keys = Object.keys(settings) as Keys[]
 
   const promises = keys.map(key => {
-    return new Promise(async () => {
+    return new Promise<void>(async resolve => {
       await setSetting(key, settings[key])
+      resolve()
     })
   })
 

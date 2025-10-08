@@ -7,24 +7,6 @@ import {log} from '../../src/utils/log'
 
 describe('Log', () => {
   it('should log messages', async () => {
-    vi.mock('fs', () => {
-      return {
-        default: {
-          promises: {
-            readFile: async () => {
-              return {
-                toString: () => {
-                  return JSON.stringify({
-                    id: faker.string.uuid(),
-                    controller: 'http://vitest'
-                  })
-                }
-              }
-            }
-          }
-        }
-      }
-    })
     const mock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     const messages: string[] = []

@@ -10,7 +10,6 @@ describe('Update Config', () => {
   server.listen()
 
   it('should update config', async () => {
-    vi.mock('fs/promises')
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     await updateConfig()
