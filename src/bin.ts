@@ -3,7 +3,7 @@ import {Command} from 'commander'
 import {enroll} from './bin/enroll'
 import {sounder} from './sounder'
 import {updateConfig, updateController} from './bin/update-config'
-import {upgrade2x} from './bin/upgrade-2x'
+import {showConfig} from './bin/show-config'
 
 import {version} from '../package.json'
 
@@ -14,16 +14,12 @@ program
   .option('-c, --controller <url>', 'Controller URL')
   .option('-s, --start', 'Start the Sounder')
   .option('-u, --update-config', 'Update comfig from the controller')
-  .option('--upgrade-2x', 'Upgrade to version 2.x')
+  .option('--show-config', 'Show the current configuration of the sounder.')
   .version(version)
 
 program.parse(process.argv)
 
 const options = program.opts()
-
-if (options.upgrade2x) {
-  void upgrade2x()
-}
 
 if (options.enroll) {
   if (!options.controller) {
@@ -43,4 +39,8 @@ if (options.updateConfig) {
 
 if (options.start) {
   void sounder()
+}
+
+if (options.showConfig) {
+  void showConfig()
 }
