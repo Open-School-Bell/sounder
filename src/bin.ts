@@ -4,6 +4,7 @@ import {enroll} from './bin/enroll'
 import {sounder} from './sounder'
 import {updateConfig, updateController} from './bin/update-config'
 import {showConfig} from './bin/show-config'
+import {showSounds} from './bin/show-sounds'
 
 import {version} from '../package.json'
 
@@ -15,6 +16,7 @@ program
   .option('-s, --start', 'Start the Sounder')
   .option('-u, --update-config', 'Update comfig from the controller')
   .option('--show-config', 'Show the current configuration of the sounder.')
+  .option('--show-sounds', 'Show the sounds on the sounder.')
   .version(version)
 
 program.parse(process.argv)
@@ -43,4 +45,8 @@ if (options.start) {
 
 if (options.showConfig) {
   void showConfig()
+}
+
+if (options.showSounds) {
+  void showSounds()
 }
