@@ -24,6 +24,7 @@ model Sound {
   ringerWire String @default("")
 
   queueEntries SoundQueue[]
+  schedules    Schedule[]
 }
 
 model SoundQueue {
@@ -32,4 +33,15 @@ model SoundQueue {
   sound   Sound    @relation(fields: [soundId], references: [id])
   soundId String
   order   DateTime @default(now())
+}
+
+model Schedule {
+  id       String @id @default(uuid())
+  time     String
+  weekDays String
+  count    Int    @default(1)
+  day      String
+
+  sound   Sound  @relation(fields: [soundId], references: [id])
+  soundId String
 }

@@ -89,6 +89,26 @@ export const updateConfig = async (logToConsole: boolean = true) => {
   })
 
   await log(`🔊 Sounds Downloaded`, logToConsole)
+
+  const scheduleResponse = await sounderApi('/get-schedule', {day: result.day})
+
+  // If we didn't a response return.
+  if (!scheduleResponse) return
+
+  // Clear the days schedule
+  await prisma.schedule.deleteMany({where: {day: result.day}})
+
+  const schedules = (await scheduleResponse.json()) as Array<{
+    time: string
+    day: string
+    weekDays: string
+    soundId: string
+    count: number
+  }>
+
+  await prisma.schedule.createMany({data: schedules})
+
+  await log(`⏰ Schedules Loaded`)
 }
 
 export const updateController = async (newController: string) => {
