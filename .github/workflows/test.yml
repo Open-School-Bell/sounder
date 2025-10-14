@@ -114,6 +114,9 @@ jobs:
             node-modules-${{ hashFiles('package-lock.json',
             'prisma/schema.prisma') }}
 
+      - name: 💽 Create Database
+        run: npx prisma migrate dev
+
       - name: 🔬 Typecheck
         run: npm run build
 
