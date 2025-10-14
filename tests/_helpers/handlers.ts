@@ -1,6 +1,8 @@
 import {http, HttpResponse} from 'msw'
 import {faker} from '@faker-js/faker'
 
+const soundId = faker.string.uuid()
+
 export const handlers = [
   http.post('*/sounder-api/enroll', async () => {
     return HttpResponse.json({
@@ -37,6 +39,34 @@ export const handlers = [
     return HttpResponse.json([])
   }),
   http.post('*/sounder-api/get-sounds', async () => {
-    return HttpResponse.json([])
+    return HttpResponse.json([
+      {
+        id: soundId,
+        fileName: faker.system.commonFileName('mp3'),
+        ringerWire: '',
+        name: faker.string.alpha()
+      }
+    ])
+  }),
+  http.get('*/sounds/*.mp3', async () => {
+    return HttpResponse.html('foo')
+  }),
+  http.post('*/sounder-api/get-schedule', async () => {
+    return HttpResponse.json([
+      {
+        time: '08:40',
+        day: 'null',
+        weekDays: '1,2,3,4,5',
+        soundId,
+        count: 2
+      },
+      {
+        time: '09:10',
+        day: 'null',
+        weekDays: '1,2,3,4,5',
+        soundId,
+        count: 2
+      }
+    ])
   })
 ]
