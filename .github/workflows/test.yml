@@ -89,6 +89,34 @@ jobs:
       - name: ✨ Prettier Check
         run: npm run prettier
 
+  typecheck:
+    name: 🔬 Typecheck
+    needs: prepare
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-typecheck
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 💾 Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key:
+            node-modules-${{ hashFiles('package-lock.json',
+            'prisma/schema.prisma') }}
+
+      - name: 🔬 Typecheck
+        run: npm run build
+
   test:
     name: 🧪 Test
     needs: prepare
