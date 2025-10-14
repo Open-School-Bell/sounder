@@ -2,10 +2,10 @@ import {getPrisma, getSetting} from './prisma'
 import {playSound} from './play'
 import {ring} from './ring'
 
-export const enqueue = async (soundId: string) => {
+export const enqueue = async (soundId: string, ringerWire: boolean = true) => {
   const prisma = getPrisma()
 
-  return prisma.soundQueue.create({data: {soundId}})
+  return prisma.soundQueue.create({data: {soundId, ringerWire}})
 }
 
 export const enqueueMany = async (soundIds: string[]) => {
@@ -38,7 +38,11 @@ export const processQueue = async (): Promise<void> => {
       resolve()
     }),
     new Promise<void>(async resolve => {
-      if (sounderPin !== 0 && firstSound.sound.ringerWire !== '') {
+      if (
+        sounderPin !== 0 &&
+        firstSound.sound.ringerWire !== '' &&
+        firstSound.ringerWire
+      ) {
         await ring(firstSound.sound.ringerWire, sounderPin)
       }
       resolve()

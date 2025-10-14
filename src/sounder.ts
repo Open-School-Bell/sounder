@@ -4,15 +4,13 @@ import fs from 'fs'
 import path from 'path'
 
 import {updateConfig} from './bin/update-config'
-import {playSound} from './utils/play'
 import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
-import {ring} from './utils/ring'
 import {VERSION} from './constants'
-import {enqueueMany, processQueue} from './utils/play-queue'
+import {enqueue, enqueueMany, processQueue} from './utils/play-queue'
 
 import {minutely} from './events/minutely'
-import {getSetting, getSettings, getSounds} from './utils/prisma'
+import {getSetting, getSettings} from './utils/prisma'
 
 const {writeFile} = fs.promises
 
@@ -93,8 +91,7 @@ export const sounder = async () => {
       lockdownEntrySound,
       lockdownExitSound,
       lockdownTimes,
-      lockdownExitTimes,
-      sounderPin
+      lockdownExitTimes
     } = await getSettings([
       'lockdownEnable',
       'lockdownEntrySound',
@@ -112,20 +109,17 @@ export const sounder = async () => {
 
     await log(`🚨 Lockdown ${lockdownEnable ? 'start' : 'end'}`)
 
-    const [entrySound, exitSound] = await getSounds([
-      lockdownEntrySound,
-      lockdownExitSound
-    ])
-
     if (lockdownEnable) {
-      void playSound(entrySound.fileName, lockdownTimes)
-      if (sounderPin !== 0 && entrySound.ringerWire !== '') {
-        void ring(entrySound.ringerWire, sounderPin, lockdownTimes)
+      let i = 0
+      while (i < lockdownTimes) {
+        await enqueue(lockdownEntrySound)
+        i++
       }
     } else {
-      void playSound(exitSound.fileName, lockdownExitTimes)
-      if (sounderPin !== 0 && exitSound.ringerWire !== '') {
-        void ring(exitSound.ringerWire, sounderPin, lockdownExitTimes)
+      let i = 0
+      while (i < lockdownExitTimes) {
+        await enqueue(lockdownExitSound)
+        i++
       }
     }
 

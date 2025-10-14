@@ -34,7 +34,9 @@ export const config = [
       '**/coverage/**',
       '.test.env',
       'tests/**',
-      'vitest.config.ts'
+      'vitest.config.ts',
+      'lib/**',
+      'generated/**'
     ]
   },
 
