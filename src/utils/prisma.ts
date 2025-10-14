@@ -1,4 +1,4 @@
-import {PrismaClient, Sound} from '../../generated/prisma/client'
+import {PrismaClient, type Sound} from '../../generated/prisma/client'
 
 declare global {
   // This prevents us from making multiple connections to the db when the
