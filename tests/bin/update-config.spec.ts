@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from 'path'
 
 import {updateConfig} from '../../src/bin/update-config'
-import {getPrisma} from '../../src/utils/prisma'
+import {getPrisma, setSettings} from '../../src/utils/prisma'
 
 const {readdir} = fs.promises
 
@@ -16,6 +16,8 @@ describe('Update Config', () => {
 
   it('should update config', async () => {
     const prisma = getPrisma()
+
+    await setSettings({controllerAddress: 'http://foo', sounderKey: 'test-key'})
 
     await prisma.schedule.deleteMany()
 
