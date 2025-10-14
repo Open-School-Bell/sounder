@@ -4,6 +4,7 @@ import {ring} from '../utils/ring'
 import {log} from '../utils/log'
 import {VERSION} from '../constants'
 import {getPrisma, getSettings, getSounds} from '../utils/prisma'
+import {enqueue, processQueue} from '../utils/play-queue'
 
 export const minutely = async () => {
   const date = new Date()
@@ -56,12 +57,12 @@ export const minutely = async () => {
   })
 
   if (schedule && schedule.weekDays.split(',').includes(dayNumber)) {
-    const scheduleSound = (await getSounds([schedule.soundId]))[0]
-
-    await log(`🔔 Ring Ring "${scheduleSound.name}"`)
-    void playSound(scheduleSound.fileName, schedule.count)
-    if (sounderPin !== 0 && scheduleSound.ringerWire !== '') {
-      void ring(scheduleSound.ringerWire, sounderPin, schedule.count)
+    let i = 0
+    while (i < schedule.count) {
+      await enqueue(schedule.soundId)
+      i++
     }
+
+    await processQueue()
   }
 }

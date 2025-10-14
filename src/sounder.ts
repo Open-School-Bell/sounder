@@ -4,12 +4,12 @@ import fs from 'fs'
 import path from 'path'
 
 import {updateConfig} from './bin/update-config'
-//import {getConfig} from './utils/config'
 import {playSound} from './utils/play'
 import {log} from './utils/log'
 import {sounderApi} from './utils/sounder-api'
 import {ring} from './utils/ring'
 import {VERSION} from './constants'
+import {enqueueMany, processQueue} from './utils/play-queue'
 
 import {minutely} from './events/minutely'
 import {getSetting, getSettings, getSounds} from './utils/prisma'
@@ -78,14 +78,9 @@ export const sounder = async () => {
       return
     }
 
-    const sounderPin = await getSetting('sounderPin')
+    await enqueueMany(JSON.parse(request.body.sounds))
 
-    void playSound(request.body.sound as string, request.body.times)
-    if (request.body.ringerWire !== '' && sounderPin !== 0) {
-      void ring(request.body.ringerWire, sounderPin, request.body.times)
-    }
-
-    await log(`📢 Broadcast ${request.body.sound as string}`)
+    void processQueue()
 
     response.json({status: 'OK'})
   })
