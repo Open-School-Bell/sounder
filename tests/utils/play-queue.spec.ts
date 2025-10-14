@@ -2,7 +2,7 @@ import {describe, it, expect, beforeEach} from 'vitest'
 import {faker} from '@faker-js/faker'
 
 import {enqueue, enqueueMany, processQueue} from '../../src/utils/play-queue'
-import {getPrisma} from '../../src/utils/prisma'
+import {getPrisma, setSetting} from '../../src/utils/prisma'
 
 describe('Play Queue', () => {
   beforeEach(async () => {
@@ -11,6 +11,8 @@ describe('Play Queue', () => {
     await prisma.soundQueue.deleteMany()
     await prisma.schedule.deleteMany()
     await prisma.sound.deleteMany()
+
+    await setSetting('sounderPin', 0)
   })
 
   it('should enqueue a sound', async () => {

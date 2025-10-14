@@ -117,5 +117,8 @@ jobs:
       - name: 💽 Create Database
         run: npx prisma migrate dev
 
+      - name: 📂 Create Folders
+        run: mkdir -p sounds
+
       - name: 🧪 vitest
         run: npm run ci
