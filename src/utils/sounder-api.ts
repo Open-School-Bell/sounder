@@ -1,12 +1,15 @@
-import {getConfig} from './config'
+import {getSettings} from './prisma'
 
 export const sounderApi = async (path: string, payload: object) => {
-  const {key, controller} = await getConfig()
+  const {sounderKey, controllerAddress} = await getSettings([
+    'sounderKey',
+    'controllerAddress'
+  ])
 
-  const response = await fetch(`${controller}/sounder-api${path}`, {
+  const response = await fetch(`${controllerAddress}/sounder-api${path}`, {
     method: 'post',
     body: JSON.stringify({
-      key,
+      key: sounderKey,
       ...payload
     })
   }).catch(() => {

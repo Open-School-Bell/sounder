@@ -3,6 +3,7 @@ import {handlers} from '../_helpers/handlers'
 import {setupServer} from 'msw/node'
 
 import {enroll} from '../../src/bin/enroll'
+import {getSettings} from '../../src/utils/prisma'
 
 describe('Enroll', () => {
   const server = setupServer(...handlers)
@@ -15,8 +16,15 @@ describe('Enroll', () => {
 
     await enroll('test-key', 'http://foo')
 
-    expect(logMock).toBeCalledTimes(1)
-    expect(logMock).toHaveBeenCalledWith('✅ Sounder Enrolled!')
+    expect(logMock).toBeCalledTimes(4)
+
+    const {sounderKey, controllerAddress} = await getSettings([
+      'sounderKey',
+      'controllerAddress'
+    ])
+
+    expect(sounderKey).toBe('test-key')
+    expect(controllerAddress).toBe('http://foo')
   })
 
   afterAll(() => {
