@@ -5,6 +5,7 @@ import {sounder} from './sounder'
 import {updateConfig, updateController} from './bin/update-config'
 import {showConfig} from './bin/show-config'
 import {showSounds} from './bin/show-sounds'
+import {clearQueue} from './bin/clear-queue'
 
 import {version} from '../package.json'
 
@@ -17,6 +18,7 @@ program
   .option('-u, --update-config', 'Update comfig from the controller')
   .option('--show-config', 'Show the current configuration of the sounder.')
   .option('--show-sounds', 'Show the sounds on the sounder.')
+  .option('--clear-queue', 'Clear the sounders play queue.')
   .version(version)
 
 program.parse(process.argv)
@@ -49,4 +51,8 @@ if (options.showConfig) {
 
 if (options.showSounds) {
   void showSounds()
+}
+
+if (options.clearQueue) {
+  void clearQueue()
 }
