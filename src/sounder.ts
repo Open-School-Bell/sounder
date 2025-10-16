@@ -123,6 +123,8 @@ export const sounder = async () => {
       }
     }
 
+    void processQueue()
+
     response.json({status: 'OK'})
   })
 
