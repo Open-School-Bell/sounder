@@ -23,6 +23,9 @@ git clone https://github.com/Open-School-Bell/sounder.git
 cd /var/osb/sounder
 
 npm install
+
+npx prisma migrate dev
+
 npm run build
 
 sudo cp /var/osb/sounder/support/bin.sh /bin/sounder
