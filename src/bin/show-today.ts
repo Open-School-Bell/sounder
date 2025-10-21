@@ -20,8 +20,8 @@ export const showToday = async () => {
   })
 
   console.table(
-    schedules.map(({time, soundId, count}) => {
-      return {time, soundId, count}
+    schedules.map(({time, sequence}) => {
+      return {time, sequence}
     })
   )
 }

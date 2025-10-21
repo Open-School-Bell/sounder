@@ -49,9 +49,11 @@ export const minutely = async () => {
   })
 
   if (schedule && schedule.weekDays.split(',').includes(dayNumber)) {
+    const sequence = JSON.parse(schedule.sequence) as string[]
+
     let i = 0
-    while (i < schedule.count) {
-      await enqueue(schedule.soundId)
+    while (i < sequence.length) {
+      await enqueue(sequence[i])
       i++
     }
 
