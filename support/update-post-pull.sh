@@ -1,6 +1,7 @@
 npm install
-npm run build
 npx prisma migrate deploy
+npx prisma generate
+npm run build
 sudo cp /var/osb/sounder/support/bin.sh /bin/sounder
 sudo chmod +x /bin/sounder
 sudo service sounder stop
