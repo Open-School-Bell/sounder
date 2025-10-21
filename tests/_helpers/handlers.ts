@@ -57,15 +57,13 @@ export const handlers = [
         time: '08:40',
         day: 'null',
         weekDays: '1,2,3,4,5',
-        soundId,
-        count: 2
+        sequence: JSON.stringify([soundId, soundId])
       },
       {
         time: '09:10',
         day: 'null',
         weekDays: '1,2,3,4,5',
-        soundId,
-        count: 2
+        sequence: JSON.stringify([soundId, soundId])
       }
     ])
   })
