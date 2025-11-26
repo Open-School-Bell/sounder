@@ -180,13 +180,24 @@ export const sounder = async () => {
       const apiResponse = await sounderApi('/get-day', {})
 
       if (!apiResponse) {
-        response.json({zones: []})
+        response.json({dayType: '', schedules: []})
         return
       }
 
-      const {schedules, dayType} = await apiResponse.json()
+      const {schedules, dayType} = (await apiResponse.json()) as {
+        dayType: string
+        schedules: Array<{weekDays: string}>
+      }
 
-      response.json({schedules, dayType})
+      const date = new Date()
+      const dayNumber = `${date.getDay() === 0 ? 7 : date.getDay()}`
+
+      response.json({
+        schedules: schedules.filter(schedule => {
+          return schedule.weekDays.split(',').includes(dayNumber)
+        }),
+        dayType
+      })
     })
 
     app.get('/screen/actions', async (request, response) => {

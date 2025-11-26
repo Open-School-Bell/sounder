@@ -151,11 +151,31 @@
       const updateDay = async () => {
         const dayResponse = await fetch('/screen/day')
         const {dayType, schedules} = await dayResponse.json()
+        const date = new Date()
+        const currentTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+        const [currentHour, currentMinute] = currentTime.split(':').map(s => {
+          return parseInt(s)
+        })
 
         document.querySelector('#dayTitle').innerHTML = dayType
         document.querySelector('#daySchedule').innerHTML = schedules
           .map(({id, time}) => {
-            return `<div>${time}</div>`
+            let color = '#000'
+
+            const [hour, minute] = time.split(':').map(s => {
+              return parseInt(s)
+            })
+
+            console.dir([currentHour, currentMinute, hour, minute])
+
+            if (
+              hour < currentHour ||
+              (hour === currentHour && minute < currentMinute)
+            ) {
+              color = '#999'
+            }
+
+            return `<div style="color:${color};">${time}</div>`
           })
           .join('')
       }
