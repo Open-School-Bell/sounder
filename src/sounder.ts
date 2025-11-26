@@ -231,13 +231,18 @@ export const sounder = async () => {
       const apiResponse = await sounderApi('/get-status', {})
 
       if (!apiResponse) {
-        response.json({system: 'down', lockdown: false, sounders: []})
+        response.json({
+          system: 'down',
+          lockdown: false,
+          sounders: [],
+          buttons: []
+        })
         return
       }
 
-      const {system, lockdown, sounders} = await apiResponse.json()
+      const {system, lockdown, sounders, buttons} = await apiResponse.json()
 
-      response.json({system, lockdown, sounders})
+      response.json({system, lockdown, sounders, buttons})
     })
 
     app.post('/screen/trigger-action', async (request, response) => {
