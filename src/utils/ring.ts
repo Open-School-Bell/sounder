@@ -1,5 +1,7 @@
 import {Gpio, type High, type Low} from 'onoff'
 
+import {log} from './log'
+
 const sleep = (ms: number): Promise<void> => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -9,6 +11,8 @@ export const ring = async (
   ringerPin: number,
   repeat: number = 1
 ) => {
+  await log(`🎚️ Ringer Wire: ${ringerWire}`)
+
   if (repeat > 1) {
     let playCount = 1
     while (playCount < repeat) {

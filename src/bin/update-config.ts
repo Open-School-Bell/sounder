@@ -8,13 +8,14 @@ import {mkdirp} from 'mkdirp'
 import {log} from '../utils/log'
 import {sounderApi} from '../utils/sounder-api'
 import {getSetting, setSetting, setSettings, getPrisma} from '../utils/prisma'
+import {VERSION} from '../constants'
 
 export const updateConfig = async (logToConsole: boolean = true) => {
   const prisma = getPrisma()
 
   const controllerAddress = await getSetting('controllerAddress')
 
-  await sounderApi('/ping', {})
+  await sounderApi('/ping', {version: VERSION})
 
   const response = await sounderApi('/get-config', {})
 
@@ -102,8 +103,7 @@ export const updateConfig = async (logToConsole: boolean = true) => {
     time: string
     day: string
     weekDays: string
-    soundId: string
-    count: number
+    sequence: string
   }>
 
   await prisma.schedule.createMany({data: schedules})

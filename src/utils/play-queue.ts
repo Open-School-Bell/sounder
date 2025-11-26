@@ -1,6 +1,7 @@
 import {getPrisma, getSetting} from './prisma'
 import {playSound} from './play'
 import {ring} from './ring'
+import {log} from './log'
 
 export const enqueue = async (soundId: string, ringerWire: boolean = true) => {
   const prisma = getPrisma()
@@ -22,6 +23,10 @@ export const processQueue = async (): Promise<void> => {
   const prisma = getPrisma()
 
   const sounderPin = await getSetting('sounderPin')
+
+  const queueLength = await prisma.soundQueue.count()
+
+  await log(`🗃️ Processing Queue. ${queueLength} in queue.`)
 
   const firstSound = await prisma.soundQueue.findFirst({
     orderBy: {order: 'asc'},
