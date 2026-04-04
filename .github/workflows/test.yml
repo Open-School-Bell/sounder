@@ -33,6 +33,21 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
 
+      - name: 🧭 Find Changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            app:
+              - 'app/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'prisma/**'
+              - '.github/workflows/**'
+              - 'tests/**'
+              - Dockerfile
+              - docker-entrypoint.sh
+
   lint:
     name: ⬣ ESLint
     needs: prepare
