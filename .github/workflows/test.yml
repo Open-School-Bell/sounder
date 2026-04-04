@@ -11,6 +11,8 @@ jobs:
   prepare:
     name: 🎫 Prepare
     runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
