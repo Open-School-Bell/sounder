@@ -2,11 +2,13 @@
 FROM node:24-trixie-slim AS base
 
 # Install openssl for Prisma
-RUN apt-get update && apt-get install openssl python3 make gcc g++ -y
+RUN apt-get update && apt-get install openssl python3 -y
 
 # Create a new temp container called `deps` from `base`
 # Add the package files and install all the deps.
 FROM base AS deps
+
+RUN apt-get install make gcc g++ -y
 
 RUN mkdir /app
 WORKDIR /app
@@ -42,8 +44,6 @@ RUN npm run build
 
 # Go back to the `base` image and copy in the production deps and build
 FROM base
-
-RUN apt-get remove python3 make gcc g++ -y
 
 ENV NODE_ENV=production
 
