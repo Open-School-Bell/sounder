@@ -24,3 +24,10 @@ export const enroll = async (key: string, controller: string) => {
   done()
   process.exit(0)
 }
+
+export const enrollWithConfig = async () => {
+  const key = await getSetting('sounderKey')
+  const controller = await getSetting('controllerAddress')
+
+  await enroll(key, controller)
+}

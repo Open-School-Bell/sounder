@@ -1,12 +1,13 @@
 import {Command} from 'commander'
 
-import {enroll} from './bin/enroll'
+import {enroll, enrollWithConfig} from './bin/enroll'
 import {sounder} from './sounder'
 import {updateConfig, updateController} from './bin/update-config'
 import {showConfig} from './bin/show-config'
 import {showSounds} from './bin/show-sounds'
 import {clearQueue} from './bin/clear-queue'
 import {showToday} from './bin/show-today'
+import {configKey, setConfigKey} from './bin/config'
 
 import {version} from '../package.json'
 
@@ -21,6 +22,18 @@ program
   .option('--show-sounds', 'Show the sounds on the sounder.')
   .option('--clear-queue', 'Clear the sounders play queue.')
   .option('--show-today', 'Show todays bell schedule.')
+  .option(
+    '-k, --config-key <key>',
+    'Returns the config keys value, if --value is set the value will be set to the new one.'
+  )
+  .option(
+    '-v, --value <value>',
+    'Set the config keys (-k/--config-key) value to the supplied value.'
+  )
+  .option(
+    '--enroll-with-config',
+    'Use the config set by -k and -v to enroll the sounder.'
+  )
   .version(version)
 
 program.parse(process.argv)
@@ -61,4 +74,16 @@ if (options.clearQueue) {
 
 if (options.showToday) {
   void showToday()
+}
+
+if (options.configKey) {
+  if (options.value) {
+    void setConfigKey(options.configKey, options.value)
+  } else {
+    void configKey(options.configKey)
+  }
+}
+
+if (options.enrollWithConfig) {
+  void enrollWithConfig()
 }
