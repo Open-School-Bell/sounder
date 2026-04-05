@@ -10,7 +10,7 @@ function prepare_database {
 
 prepare_database
 
-if ["$ENROLLMENT_KEY" != "" && "$CONTROLLER_URL" != ""]
+if [ "$ENROLLMENT_KEY" != "" && "$CONTROLLER_URL" != "" ];
 then
   node ./lib/bin.js -k sounderKey -v "$ENROLLMENT_KEY"
   node ./lib/bin.js -k controllerAddress -v "$CONTROLLER_URL"
