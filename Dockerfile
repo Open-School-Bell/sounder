@@ -57,5 +57,7 @@ ADD . .
 
 RUN chmod +x /app/docker-entrypoint.sh
 
+HEALTHCHECK --interval=60s --timeout=30s --start-period=30s --retries=3 CMD [ "node ./lib/bin.js -h" ]
+
 ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
 CMD []

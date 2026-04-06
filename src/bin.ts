@@ -9,6 +9,7 @@ import {clearQueue} from './bin/clear-queue'
 import {showToday} from './bin/show-today'
 import {configKey, setConfigKey} from './bin/config'
 import {docker} from './bin/docker'
+import {healthCheck} from './bin/health-check'
 
 import {version} from '../package.json'
 
@@ -39,6 +40,7 @@ program
     '-d, --docker',
     'Same as -s but can be launched unconfigured/enrolled.'
   )
+  .option('-h, --health-check', 'Run a health check on the sounder.')
   .version(version)
 
 program.parse(process.argv)
@@ -95,4 +97,8 @@ if (options.enrollWithConfig) {
 
 if (options.docker) {
   void docker()
+}
+
+if (options.healthCheck) {
+  void healthCheck()
 }
