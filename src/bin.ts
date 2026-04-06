@@ -8,6 +8,7 @@ import {showSounds} from './bin/show-sounds'
 import {clearQueue} from './bin/clear-queue'
 import {showToday} from './bin/show-today'
 import {configKey, setConfigKey} from './bin/config'
+import {docker} from './bin/docker'
 
 import {version} from '../package.json'
 
@@ -33,6 +34,10 @@ program
   .option(
     '--enroll-with-config',
     'Use the config set by -k and -v to enroll the sounder.'
+  )
+  .option(
+    '-d, --docker',
+    'Same as -s but can be launched unconfigured/enrolled.'
   )
   .version(version)
 
@@ -86,4 +91,8 @@ if (options.configKey) {
 
 if (options.enrollWithConfig) {
   void enrollWithConfig()
+}
+
+if (options.docker) {
+  void docker()
 }
