@@ -7,5 +7,5 @@ services:
     ports:
       - 3000:3000
     environment:
-      CONTROLLER_URL: http://<controller_ip>:<port>
-      ENROLLMENT_KEY: <enrollment_key>
+      CONTROLLER_URL: <CONTROLLER_ADDRESS>
+      ENROLLMENT_KEY: <SOUNDER_KEY>
