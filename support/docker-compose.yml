@@ -1,0 +1,11 @@
+services:
+  sounder:
+    image: openschoolbell/sounder:2
+    restart: always
+    devices:
+      - /dev/snd:/dev/snd
+    ports:
+      - 3000:3000
+    environment:
+      CONTROLLER_URL: http://<controller_ip>:<port>
+      ENROLLMENT_KEY: <enrollment_key>
