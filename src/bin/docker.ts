@@ -22,7 +22,7 @@ export const docker = async () => {
     await setSetting('sounderKey', process.env.ENROLLMENT_KEY)
   }
 
-  await enrollWithConfig()
+  await enrollWithConfig(false)
 
   await updateConfig()
 
