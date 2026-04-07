@@ -20,7 +20,7 @@ sudo usermod -aG docker $USER
 
 sudo mkdir -p /var/osb/sounder-docker
 
-chown $USER:docker /var/osb/sounder-docker
+sudo chown $USER:docker /var/osb/sounder-docker
 
 curl -fsSL https://raw.githubusercontent.com/Open-School-Bell/sounder/refs/heads/main/support/docker-compose.yml -o docker-compose.yml
 curl -fsSL https://raw.githubusercontent.com/Open-School-Bell/sounder/refs/heads/main/support/docker-bin.sh -o docker-bin.sh
