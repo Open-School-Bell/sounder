@@ -1,6 +1,7 @@
 import {getSettings, setSetting} from '../utils/prisma'
 import {updateConfig} from './update-config'
 import {sounder} from '../sounder'
+import {enrollWithConfig} from './enroll'
 
 export const docker = async () => {
   const {controllerAddress, sounderKey} = await getSettings([
@@ -20,6 +21,8 @@ export const docker = async () => {
     console.log('Setting Sounder Key to environment variable')
     await setSetting('sounderKey', process.env.ENROLLMENT_KEY)
   }
+
+  await enrollWithConfig()
 
   await updateConfig()
 
