@@ -1,7 +1,11 @@
 import {title, step} from '../utils/cli'
 import {getSetting, setSetting} from '../utils/prisma'
 
-export const enroll = async (key: string, controller: string) => {
+export const enroll = async (
+  key: string,
+  controller: string,
+  exitOnFinish: boolean = true
+) => {
   title('Sounder Enrollment')
 
   const done = step('Enrolling')
@@ -22,5 +26,14 @@ export const enroll = async (key: string, controller: string) => {
   await getSetting('sounderKey')
 
   done()
-  process.exit(0)
+  if (exitOnFinish) {
+    process.exit(0)
+  }
+}
+
+export const enrollWithConfig = async (exitOnFinish: boolean = true) => {
+  const key = await getSetting('sounderKey')
+  const controller = await getSetting('controllerAddress')
+
+  await enroll(key, controller, exitOnFinish)
 }
