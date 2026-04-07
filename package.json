@@ -1,6 +1,6 @@
 {
   "name": "osb-sounder",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "type": "commonjs",
   "scripts": {
     "dev": "ts-node-dev --respawn ./src/sounder.ts",

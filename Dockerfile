@@ -2,7 +2,7 @@
 FROM node:24-trixie-slim AS base
 
 # Install openssl for Prisma
-RUN apt-get update && apt-get install openssl python3 mpg321 -y
+RUN apt-get update && apt-get install openssl python3 mpg321 alsa-utils -y
 
 # Create a new temp container called `deps` from `base`
 # Add the package files and install all the deps.
