@@ -31,7 +31,7 @@ export const enroll = async (
   }
 }
 
-export const enrollWithConfig = async (exitOnFinish: boolean) => {
+export const enrollWithConfig = async (exitOnFinish: boolean = true) => {
   const key = await getSetting('sounderKey')
   const controller = await getSetting('controllerAddress')
 
