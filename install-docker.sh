@@ -31,10 +31,12 @@ sudo cp ./docker-bin.sh /bin/sounder
 sudo chmod +x /bin/sounder
 
 configure_docker() {
-  read -p "Controller Address (http://192.168.1.1:3000) " ca
-  read -p "Sounder Key " sk
+  read -p "Controller Address (http://192.168.1.1:3000): " ca
+  read -p "Sounder Key: " sk
+  read -p "Timezon (e.g. Europe/London): " tz
   sed -i "s#<CONTROLLER_ADDRESS>#$ca#" ./docker-compose.yml
   sed -i "s/<SOUNDER_KEY>/$sk/" ./docker-compose.yml
+  sed -i "s/<TIMEZONE>/$tz/" ./docker-compose.yml
 
   sudo docker compose pull
   sudo docker compose up -d
