@@ -56,7 +56,7 @@ export const updateConfig = async (logToConsole: boolean = true) => {
   const date = new Date()
   const currentTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 
-  await log(`🕒 Sounde time is ${currentTime}`)
+  await log(`🕒 Sounder time is ${currentTime}`)
 
   await log(`✅ Config updated!`, logToConsole)
 
