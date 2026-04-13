@@ -4,8 +4,12 @@ services:
     restart: always
     devices:
       - /dev/snd:/dev/snd
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - 3000:3000
     environment:
       CONTROLLER_URL: <CONTROLLER_ADDRESS>
       ENROLLMENT_KEY: <SOUNDER_KEY>
+      TZ: <TIMEZONE>
