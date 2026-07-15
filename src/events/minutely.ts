@@ -30,7 +30,7 @@ export const minutely = async () => {
 
   await sounderApi('/ping', {version: VERSION})
 
-  if (lockdownEnable) {
+  if (lockdownEnable && lockdownInterval !== 0) {
     if (date.getMinutes() % lockdownInterval === 0) {
       await log('🚨 Lockdown re-broadcast')
 
