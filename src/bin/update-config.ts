@@ -29,10 +29,8 @@ export const updateConfig = async (logToConsole: boolean = true) => {
     screen: boolean
     lockdown: {
       enable: boolean
-      entrySound: string
-      exitSound: string
-      times: number
-      exitTimes: number
+      entrySequence: string
+      exitSequence: string
       interval: number
       repeatRingerWire: boolean
     }
@@ -45,10 +43,8 @@ export const updateConfig = async (logToConsole: boolean = true) => {
     sounderPin: result.ringerPin,
     currentDay: result.day,
     lockdownEnable: result.lockdown.enable,
-    lockdownEntrySound: result.lockdown.entrySound,
-    lockdownExitSound: result.lockdown.exitSound,
-    lockdownTimes: result.lockdown.times,
-    lockdownExitTimes: result.lockdown.exitTimes,
+    lockdownEntrySequence: result.lockdown.entrySequence,
+    lockdownExitSequence: result.lockdown.exitSequence,
     lockdownInterval: result.lockdown.interval,
     lockdownRepeatRingerWire: result.lockdown.repeatRingerWire
   })

@@ -2,7 +2,7 @@ import {sounderApi} from '../utils/sounder-api'
 import {log} from '../utils/log'
 import {VERSION} from '../constants'
 import {getPrisma, getSettings} from '../utils/prisma'
-import {enqueue, processQueue} from '../utils/play-queue'
+import {enqueue, processQueue, enqueueMany} from '../utils/play-queue'
 
 export const minutely = async () => {
   const date = new Date()
@@ -15,15 +15,13 @@ export const minutely = async () => {
     currentDay,
     lockdownEnable,
     lockdownInterval,
-    lockdownEntrySound,
-    lockdownTimes,
+    lockdownEntrySequence,
     lockdownRepeatRingerWire
   } = await getSettings([
     'currentDay',
     'lockdownEnable',
     'lockdownInterval',
-    'lockdownEntrySound',
-    'lockdownTimes',
+    'lockdownEntrySequence',
     'lockdownRepeatRingerWire',
     'sounderPin'
   ])
@@ -34,11 +32,10 @@ export const minutely = async () => {
     if (date.getMinutes() % lockdownInterval === 0) {
       await log('🚨 Lockdown re-broadcast')
 
-      let i = 0
-      while (i < lockdownTimes) {
-        await enqueue(lockdownEntrySound, lockdownRepeatRingerWire)
-        i++
-      }
+      await enqueueMany(
+        JSON.parse(lockdownEntrySequence),
+        lockdownRepeatRingerWire
+      )
 
       await processQueue()
     }

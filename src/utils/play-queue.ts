@@ -9,12 +9,15 @@ export const enqueue = async (soundId: string, ringerWire: boolean = true) => {
   return prisma.soundQueue.create({data: {soundId, ringerWire}})
 }
 
-export const enqueueMany = async (soundIds: string[]) => {
+export const enqueueMany = async (
+  soundIds: string[],
+  ringerWire: boolean = true
+) => {
   const prisma = getPrisma()
 
   return prisma.soundQueue.createMany({
     data: soundIds.map(soundId => {
-      return {soundId}
+      return {soundId, ringerWire}
     })
   })
 }
