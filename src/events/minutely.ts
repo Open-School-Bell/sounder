@@ -39,6 +39,8 @@ export const minutely = async () => {
         await enqueue(lockdownEntrySound, lockdownRepeatRingerWire)
         i++
       }
+
+      await processQueue()
     }
 
     return
