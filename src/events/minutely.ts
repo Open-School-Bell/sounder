@@ -30,6 +30,12 @@ export const minutely = async () => {
 
   if (lockdownEnable && lockdownInterval !== 0) {
     if (date.getMinutes() % lockdownInterval === 0) {
+      const queueLength = await prisma.soundQueue.count()
+
+      if (queueLength !== 0) {
+        return
+      }
+
       await log('🚨 Lockdown re-broadcast')
 
       await enqueueMany(
