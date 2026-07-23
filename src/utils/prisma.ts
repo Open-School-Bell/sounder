@@ -22,10 +22,8 @@ type ConfigType = {
   controllerAddress: string
   currentDay: string
   lockdownEnable: boolean
-  lockdownEntrySound: string
-  lockdownExitSound: string
-  lockdownTimes: number
-  lockdownExitTimes: number
+  lockdownEntrySequence: string
+  lockdownExitSequence: string
   lockdownInterval: number
   lockdownRepeatRingerWire: boolean
 }

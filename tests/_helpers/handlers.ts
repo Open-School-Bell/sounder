@@ -23,10 +23,8 @@ export const handlers = [
       schedules: [],
       lockdown: {
         enable: false,
-        entrySound: '',
-        exitSound: '',
-        times: 1,
-        exitTimes: 1,
+        entrySequence: '[]',
+        exitSequence: '[]',
         interval: 5,
         repeatRingerWire: false
       }

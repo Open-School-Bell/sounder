@@ -86,20 +86,13 @@ export const sounder = async () => {
   app.post('/lockdown', async (request, response) => {
     await updateConfig()
 
-    const {
-      lockdownEnable,
-      lockdownEntrySound,
-      lockdownExitSound,
-      lockdownTimes,
-      lockdownExitTimes
-    } = await getSettings([
-      'lockdownEnable',
-      'lockdownEntrySound',
-      'lockdownExitSound',
-      'lockdownTimes',
-      'lockdownExitTimes',
-      'sounderPin'
-    ])
+    const {lockdownEnable, lockdownEntrySequence, lockdownExitSequence} =
+      await getSettings([
+        'lockdownEnable',
+        'lockdownEntrySequence',
+        'lockdownExitSequence',
+        'sounderPin'
+      ])
 
     if (request.body.key !== sounderKey) {
       await log('🔑 Bad key from controller')
@@ -110,17 +103,9 @@ export const sounder = async () => {
     await log(`🚨 Lockdown ${lockdownEnable ? 'start' : 'end'}`)
 
     if (lockdownEnable) {
-      let i = 0
-      while (i < lockdownTimes) {
-        await enqueue(lockdownEntrySound)
-        i++
-      }
+      await enqueueMany(JSON.parse(lockdownEntrySequence))
     } else {
-      let i = 0
-      while (i < lockdownExitTimes) {
-        await enqueue(lockdownExitSound)
-        i++
-      }
+      await enqueueMany(JSON.parse(lockdownExitSequence))
     }
 
     void processQueue()
